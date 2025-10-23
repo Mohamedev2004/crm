@@ -8,8 +8,8 @@ use App\Http\Controllers\DealController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CommercialController;
 use App\Http\Controllers\ClientController;
-use App\Http\Controllers\ClientLeadController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\TransactionController;
 use Inertia\Inertia;
@@ -28,6 +28,7 @@ Route::middleware(['guest'])->group(function () {
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('finance', [FinanceController::class, 'index'])->name('finance');
 
     Route::get('/commercials', [CommercialController::class, 'index'])->name('admin.commercials');  
     Route::post('/commercials', [CommercialController::class, 'store'])->name('admin.commercials.store'); 
@@ -97,7 +98,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
 //------------------------------ Client ROUTES ------------------------------//
 Route::prefix('client')->middleware(['auth', 'client'])->group(function () {
-    Route::get('/', [ClientLeadController::class, 'index'])->name('client.dashboard');  
+    Route::get('/', function () {
+        return Inertia::render('client/dashboard');
+    })->name('client.dashboard');
 });
 
 

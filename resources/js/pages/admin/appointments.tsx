@@ -23,11 +23,14 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: "Application", href: "#" },
-  {
-    title: 'Appointments',
-    href: '/appointments',
-  },
+    {
+        title: 'Personal',
+        href: route('admin.appointments'),
+    },
+    {
+        title: 'Appointments',
+        href: '/dashboard',
+    },
 ];
 
 interface Props {
@@ -327,12 +330,9 @@ export default function Appointments({ appointments, flash, auth }: Props) {
 
         <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
+            <h2 className="text-2xl font-bold">
             Manage Your Appointments
             </h2>
-            <p className="text-sm max-w-4xl sm:text-base text-gray-600 dark:text-gray-300">
-            This page displays all appointments. You can view detailed information for each appointment.
-            </p>
         </div>
 
         </div>

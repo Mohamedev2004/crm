@@ -7,8 +7,16 @@ import AppLayout from "@/layouts/app-layout";
 import { type BreadcrumbItem } from "@/types";
 import { Head, router } from "@inertiajs/react";
 
-const breadcrumbs: BreadcrumbItem[] = [{ title: "Deals", href: "/deals" }];
-
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Data',
+        href: route('admin.deals'),
+    },
+    {
+        title: 'Deals',
+        href: '/dashboard',
+    },
+];
 interface DealsProps {
   deals?: Deal[];
   clients?: { id: number; name: string }[];

@@ -143,7 +143,7 @@ export default function AppointmentCalendar() {
         </Select>
       </div>
 
-      <CardContent className="-mt-4">
+      <CardContent className="-mt-1">
         {loading ? (
           <div className="flex justify-center items-center h-[200px]">
             <span className="text-muted-foreground cursor-pointer text-sm animate-pulse">

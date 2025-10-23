@@ -13,7 +13,14 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: "Invoices", href: "/invoices" },
+    {
+        title: 'Personal',
+        href: route('admin.invoices'),
+    },
+    {
+        title: 'Invoices',
+        href: '/dashboard',
+    },
 ];
 
 interface InvoicesProps {

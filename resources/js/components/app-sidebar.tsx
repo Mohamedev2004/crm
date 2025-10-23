@@ -33,7 +33,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
         label: 'Platform',
         items: [
           { title: 'Analytics', href: dashboard(), icon: ChartBar },
-          { title: 'Finance', href: '', icon: CreditCard },
+          { title: 'Finance', href: '/admin/finance', icon: CreditCard },
         ],
       },
       {

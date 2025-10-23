@@ -27,8 +27,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const breadcrumbs: BreadcrumbItem[] = [{ title: "Leads", href: "/leads" }];
-
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Data',
+        href: route('admin.leads'),
+    },
+    {
+        title: 'Leads',
+        href: '/dashboard',
+    },
+];
 export interface Lead {
   id: number;
   name: string;

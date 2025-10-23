@@ -9,7 +9,14 @@ import { SalesPipeline } from "@/components/SalesPipeline"; // <- import it
 import AppointmentCalendar from "@/components/AppointmentCalendar";
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: "Dashboard", href: "/dashboard" },
+    {
+        title: 'Platform',
+        href: route('dashboard'),
+    },
+    {
+        title: 'Analytics',
+        href: '/dashboard',
+    },
 ];
 
 interface PipelineStageData {

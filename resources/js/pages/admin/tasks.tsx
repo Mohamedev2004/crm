@@ -59,7 +59,16 @@ interface TasksProps {
   };
 }
 
-const breadcrumbs: BreadcrumbItem[] = [{ title: "Tasks", href: "/tasks" }];
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Personal',
+        href: route('admin.tasks'),
+    },
+    {
+        title: 'Tasks',
+        href: '/dashboard',
+    },
+];
 
 const statuses: Record<Task["status"], string> = {
   pending: "Pending",

@@ -13,7 +13,14 @@ import { Button } from "@/components/ui/button";
 import { Plus, } from "lucide-react";
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: "Commercials", href: "/commercials" },
+    {
+        title: 'Users',
+        href: route('admin.commercials'),
+    },
+    {
+        title: 'Commercials',
+        href: '/dashboard',
+    },
 ];
 
 interface CommercialsProps {

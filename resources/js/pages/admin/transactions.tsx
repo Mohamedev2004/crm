@@ -14,7 +14,14 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Plus } from "lucide-react";
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: "Transactions", href: "/transactions" },
+    {
+        title: 'Personal',
+        href: route('admin.transactions'),
+    },
+    {
+        title: 'Transactions',
+        href: '/dashboard',
+    },
 ];
 
 interface TransactionsProps {

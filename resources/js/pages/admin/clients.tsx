@@ -13,7 +13,16 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const breadcrumbs: BreadcrumbItem[] = [{ title: "Clients", href: "/clients" }];
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Users',
+        href: route('admin.clients'),
+    },
+    {
+        title: 'Clients',
+        href: '/dashboard',
+    },
+];
 
 interface ClientsProps {
   clients: Client[];
