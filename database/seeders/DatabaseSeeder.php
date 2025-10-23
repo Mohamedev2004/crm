@@ -94,6 +94,8 @@ class DatabaseSeeder extends Seeder
         }
         $this->call([
             AppointmentSeeder::class,
+            InvoiceSeeder::class,
+            TransactionSeeder::class,
         ]);
 
         $this->command->info('✅ Database seeded with clients, leads, deals, revenues, tasks, and appointments!');

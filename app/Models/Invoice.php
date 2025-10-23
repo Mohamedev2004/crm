@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Invoice extends Model
 {
+    use HasFactory;
 
     protected $fillable = [
         'title', 'description', 'amount', 'tax', 'discount', 'status',
