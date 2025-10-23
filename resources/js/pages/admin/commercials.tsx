@@ -5,7 +5,7 @@ import { columns as columnsFn, type Commercial } from "@/components/admin/commer
 import { DataTable } from "@/components/admin/commercials/data-table";
 import AppLayout from "@/layouts/app-layout";
 import { type BreadcrumbItem } from "@/types";
-import { Head, useForm } from "@inertiajs/react";
+import { Head, router, useForm } from "@inertiajs/react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -119,7 +119,7 @@ export default function Commercials({ commercials, auth }: CommercialsProps) {
 
   const confirmDelete = () => {
     if (!commercialToDelete) return;
-    post(route("admin.commercials.destroy", commercialToDelete.id), {
+    router.delete(route("admin.commercials.destroy", commercialToDelete.id), {
       onSuccess: () => {
         setIsDeleteModalOpen(false);
         showToastMessage("Commercial deleted successfully!", "success");

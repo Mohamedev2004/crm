@@ -9,6 +9,7 @@ type Task = {
   description?: string;
   status: "pending" | "in_progress" | "done" | "cancelled";
   priority: "low" | "medium" | "high";
+  start_date: string;
   due_date: string;
 };
 

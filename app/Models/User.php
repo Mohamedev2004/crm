@@ -84,4 +84,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Target::class, 'created_by');
     }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
 }

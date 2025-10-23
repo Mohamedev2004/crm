@@ -5,7 +5,7 @@ import { columns as columnsFn, type Client } from "@/components/admin/clients/co
 import { DataTable } from "@/components/admin/clients/data-table";
 import AppLayout from "@/layouts/app-layout";
 import { type BreadcrumbItem } from "@/types";
-import { Head, useForm } from "@inertiajs/react";
+import { Head, router, useForm } from "@inertiajs/react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -134,7 +134,7 @@ export default function Clients({ clients, commercials, auth }: ClientsProps) {
 
   const confirmDelete = () => {
     if (!clientToDelete) return;
-    post(route("admin.clients.destroy", clientToDelete.id), {
+    router.delete(route("admin.clients.destroy", clientToDelete.id), {
       onSuccess: () => {
         setIsDeleteModalOpen(false);
         showToastMessage("Client deleted successfully!", "success");

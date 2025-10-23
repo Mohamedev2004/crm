@@ -32,9 +32,10 @@ interface DataTableProps<TData, TValue> {
   rowSelection: Record<string, boolean>;
   setRowSelection: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
   clients?: { id: number; name: string }[];
+  deals?: { id: number; title: string }[];
 }
 
-export function DataTable<TData extends { client?: { id: number; name: string } | null }, TValue>({
+export function DataTable<TData, TValue>({
   columns,
   data = [],
   rowSelection,

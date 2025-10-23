@@ -7,7 +7,7 @@ import { DataTable } from "@/components/admin/leads/data-table";
 import AppLayout from "@/layouts/app-layout";
 import { type BreadcrumbItem } from "@/types";
 // Import 'Inertia' for global requests like status updates
-import { Head, useForm, router as Inertia } from "@inertiajs/react"; 
+import { Head, useForm, router as Inertia, router } from "@inertiajs/react"; 
 import {
   Dialog,
   DialogContent,
@@ -200,7 +200,7 @@ export default function Leads({
 
   const confirmDelete = () => {
     if (!leadToDelete) return;
-    post(route("admin.leads.destroy", leadToDelete.id), {
+    router.delete(route("admin.leads.destroy", leadToDelete.id), {
       onSuccess: () => {
         setIsDeleteModalOpen(false);
         showToastMessage("Lead deleted successfully!", "success");

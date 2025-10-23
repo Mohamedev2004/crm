@@ -10,6 +10,8 @@ use App\Http\Controllers\CommercialController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ClientLeadController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\TransactionController;
 use Inertia\Inertia;
 
 
@@ -74,6 +76,19 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::post('/appointments/complete-many', [AppointmentController::class, 'completeMany'])->name('appointments.completeMany');
     Route::get('/appointment-calendar', [AppointmentController::class, 'getAppointmentCalendar']);
     Route::get('/available-appointment-dates', [AppointmentController::class, 'getAvailableAppointmentDates']);
+
+    Route::get('/transactions', [TransactionController::class, 'index'])->name('admin.transactions');
+    Route::post('/transactions', [TransactionController::class, 'store'])->name('admin.transactions.store');
+    Route::put('/transactions/{transaction}', [TransactionController::class, 'update'])->name('admin.transactions.update');
+    Route::delete('/transactions/{transaction}', [TransactionController::class, 'destroy'])->name('admin.transactions.destroy');
+
+    Route::get('/invoices', [InvoiceController::class, 'index'])->name('admin.invoices');
+    Route::post('/invoices', [InvoiceController::class, 'store'])->name('admin.invoices.store');
+    Route::put('/invoices/{invoice}', [InvoiceController::class, 'update'])->name('admin.invoices.update');
+    Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy'])->name('admin.invoices.destroy');
+    Route::get('/invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('admin.invoices.download');
+    Route::post('/invoices/{invoice}/set-paid', [InvoiceController::class, 'setPaid'])->name('admin.invoices.setPaid');
+    Route::post('/invoices/{invoice}/set-overdue', [InvoiceController::class, 'setOverdue'])->name('admin.invoices.setOverdue');
 
 
 });

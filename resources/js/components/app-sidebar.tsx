@@ -56,7 +56,8 @@ export function AppSidebar({ user }: AppSidebarProps) {
         items: [
           { title: 'Kanban', href: '/admin/tasks', icon: SquareKanban },
           { title: 'Calendar', href: '/admin/appointments', icon: Calendar },
-          { title: 'Transactions', href: '', icon: TrendingUpDown },
+          { title: 'Transactions', href: '/admin/transactions', icon: TrendingUpDown },
+          { title: 'Invoices', href: '/admin/invoices', icon: Folder },
         ],
       },
     ],
