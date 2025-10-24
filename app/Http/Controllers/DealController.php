@@ -16,7 +16,9 @@ class DealController extends Controller
         $deals = Deal::with(['client:id,name', 'createdBy:id,name'])
             ->get();
 
-        $clients = User::select('id', 'name')->get();
+        $clients = User::select('id', 'name', 'role') // <-- include role
+            ->where('role', '!=', 'admin')          // <-- filter out admins here
+            ->get();
 
         $stages = ['lead', 'proposal', 'negotiation', 'closed_won', 'closed_lost'];
 

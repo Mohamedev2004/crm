@@ -45,12 +45,10 @@ export function MonthlyExpensesChart({ data, availableYears, defaultYear }: Mont
 
   return (
     <Card className="flex flex-col flex-1">
-      <CardHeader className="pb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div>
+      <CardHeader className="">
           <CardTitle>Monthly Expenses</CardTitle>
           <CardDescription>Expense overview for {selectedYear}</CardDescription>
-        </div>
-
+        <div className="flex justify-end">
         <Select
           value={selectedYear.toString()}
           onValueChange={(value) => setSelectedYear(Number(value))}
@@ -66,6 +64,7 @@ export function MonthlyExpensesChart({ data, availableYears, defaultYear }: Mont
             ))}
           </SelectContent>
         </Select>
+        </div>
       </CardHeader>
 
       <CardContent className="flex-1">

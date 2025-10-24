@@ -82,7 +82,7 @@ export function ExpensesByCategory({ data }: ExpensesByCategoryProps) {
                 const data = payload[0].payload
                 return (
                 <div className="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-md p-2 shadow-md text-sm">
-                    <div className="font-semibold text-gray-900 dark:text-white">{data.category}</div>
+                    <div className="font-semibold text-gray-900 capitalize dark:text-white">{data.category}</div>
                     <div className="flex justify-between mt-1">
                     <span className="text-gray-600 dark:text-gray-300">Transactions:</span>
                     <span className="font-medium">{data.count}</span>
