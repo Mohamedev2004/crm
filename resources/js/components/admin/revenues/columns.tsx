@@ -54,7 +54,7 @@ export const columns = (): ColumnDef<Revenue>[] => [
   {
     accessorKey: "amount",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Amount" />,
-    cell: ({ row }) => `${Number(row.original.amount).toFixed(2)} DHS`,
+    cell: ({ row }) => `${Number(row.original.amount).toFixed(2)} Dhs`,
   },
   {
     accessorKey: "payment_date",

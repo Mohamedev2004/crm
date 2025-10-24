@@ -18,7 +18,6 @@ import {
   Download,
   Clock,
   CheckCircle,
-  CheckSquare,
   XCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -125,7 +124,7 @@ export const columns = (
       <DataTableColumnHeader column={column} title="Total" />
     ),
     cell: ({ row }) => (
-      <Badge variant="outline">${row.original.total.toFixed(2)}</Badge>
+      <Badge variant="outline">{row.original.total.toFixed(2)} Dhs</Badge>
     ),
   },
 
@@ -143,7 +142,7 @@ export const columns = (
         ) : status === "paid" ? (
           <CheckCircle className="w-4 h-4 mr-1" />
         ) : status === "overdue" ? (
-          <CheckSquare className="w-4 h-4 mr-1" />
+          <XCircle className="w-4 h-4 mr-1" />
         ) : (
           <XCircle className="w-4 h-4 mr-1" />
         );

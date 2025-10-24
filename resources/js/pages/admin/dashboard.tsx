@@ -82,7 +82,7 @@ export default function Dashboard({ auth, stats, charts, tasks, salesPipeline }:
     },
     {
       title: "Total Revenue",
-      value: `$${stats.totals.revenues.toLocaleString()}`,
+      value: `${stats.totals.revenues.toLocaleString()} Dhs`,
       change: stats.changes.revenues,
       icon: <DollarSign className="w-6 h-6 text-neutral-500 dark:text-neutral-400" />,
     },

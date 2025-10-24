@@ -79,7 +79,7 @@ export function MonthlyExpensesChart({ data, availableYears, defaultYear }: Mont
                   labelFormatter={(label, payload) => {
                     const entry = payload?.[0]?.payload;
                     const total = entry?.total ?? 0;
-                    return `${label} — ${total.toFixed(2)} $ total`;
+                    return `${label} — ${total.toFixed(2)} Dhs total`;
                   }}
                 />
               }

@@ -88,8 +88,8 @@ export function ExpensesByCategory({ data }: ExpensesByCategoryProps) {
                     <span className="font-medium">{data.count}</span>
                     </div>
                     <div className="flex justify-between mt-0.5">
-                    <span className="text-gray-600 dark:text-gray-300">Total:</span>
-                    <span className="font-medium">${data.total.toLocaleString()}</span>
+                    <span className="text-gray-600 dark:text-gray-300">Total: </span>
+                    <span className="font-medium"> {data.total.toLocaleString()} Dhs</span>
                     </div>
                 </div>
                 )

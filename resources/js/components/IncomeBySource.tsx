@@ -21,10 +21,10 @@ interface IncomeBySourceProps {
 }
 
 const formatCurrency = (value: number): string => {
-  return `$${value.toLocaleString("en-US", {
+  return `${value.toLocaleString("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  })}`
+  })} Dhs`
 }
 
 export const IncomeBySource: React.FC<IncomeBySourceProps> = ({ rawData }) => {

@@ -44,19 +44,19 @@ export default function Finance({
   const cards = [
     {
       title: "Balance",
-      value: `$${totals.balance.toFixed(2)}`,
+      value: `${totals.balance.toFixed(2)} Dhs`,
       change: trends.balance,
       icon: trends.balance !== null ? (trends.balance >= 0 ? <ArrowUp className="text-green-500" /> : <ArrowDown className="text-red-500" />) : null,
     },
     {
       title: "Total Income",
-      value: `$${totals.income.toFixed(2)}`,
+      value: `${totals.income.toFixed(2)} Dhs`,
       change: trends.income,
       icon: trends.income !== null ? (trends.income >= 0 ? <ArrowUp className="text-green-500" /> : <ArrowDown className="text-red-500" />) : null,
     },
     {
       title: "Expenses",
-      value: `$${totals.expenses.toFixed(2)}`,
+      value: `${totals.expenses.toFixed(2)} Dhs`,
       change: trends.expenses,
       icon: trends.expenses !== null ? (trends.expenses >= 0 ? <ArrowUp className="text-green-500" /> : <ArrowDown className="text-red-500" />) : null,
     },

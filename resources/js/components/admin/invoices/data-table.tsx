@@ -34,7 +34,7 @@ import {
 import { DataTablePagination } from "@/components/data-table-pagination";
 import { DataTableViewOptions } from "@/components/data-table-view-options";
 import { Label } from "@/components/ui/label";
-import { CheckSquare, CircleCheck, CircleX } from "lucide-react";
+import { CheckCircle, Clock, XCircle } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -124,17 +124,17 @@ export function DataTable<TData, TValue>({
                   <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="pending">
                     <div className="flex items-center gap-2">
-                      <CircleX className="w-4 h-4" /> Pending
+                      <Clock className="w-4 h-4" /> Pending
                     </div>
                   </SelectItem>
                   <SelectItem value="paid">
                     <div className="flex items-center gap-2">
-                      <CircleCheck className="w-4 h-4" /> Paid
+                      <CheckCircle className="w-4 h-4" /> Paid
                     </div>
                   </SelectItem>
                   <SelectItem value="overdue">
                     <div className="flex items-center gap-2">
-                      <CheckSquare className="w-4 h-4" /> Overdue
+                      <XCircle className="w-4 h-4" /> Overdue
                     </div>
                   </SelectItem>
                 </SelectContent>

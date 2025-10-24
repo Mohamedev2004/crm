@@ -20,10 +20,10 @@ interface SalesPipelineProps {
 }
 
 const formatCurrency = (value: number): string => {
-  return `$${value.toLocaleString("en-US", {
+  return `${value.toLocaleString("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  })}`
+  })} Dhs`
 }
 
 export const SalesPipeline: React.FC<SalesPipelineProps> = ({ rawPipeline }) => {

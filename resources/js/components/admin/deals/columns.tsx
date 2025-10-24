@@ -63,7 +63,7 @@ export const columns = ({ onSetStage }: ColumnsProps): ColumnDef<Deal>[] => [
   {
     accessorKey: "value",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Value" />,
-    cell: ({ row }) => `${Number(row.original.value || 0).toFixed(2)} DHS`,
+    cell: ({ row }) => `${Number(row.original.value || 0).toFixed(2)} Dhs`,
   },
   {
     accessorKey: "stage",
