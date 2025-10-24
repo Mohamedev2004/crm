@@ -16,7 +16,6 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 
-
 interface ExpenseCategory {
   category: string
   total: number
@@ -44,6 +43,18 @@ export function ExpensesByCategory({ data }: ExpensesByCategoryProps) {
   const totalExpenses = React.useMemo(() => {
     return data.reduce((acc, curr) => acc + curr.total, 0)
   }, [data])
+
+  // ✅ Compact number formatting (k, M, B)
+  const formatCompactNumber = (num: number): string => {
+    if (num >= 1_000_000_000) {
+      return (num / 1_000_000_000).toFixed(num % 1_000_000_000 === 0 ? 0 : 2).replace(/\.0+$/, "") + "B"
+    } else if (num >= 1_000_000) {
+      return (num / 1_000_000).toFixed(num % 1_000_000 === 0 ? 0 : 2).replace(/\.0+$/, "") + "M"
+    } else if (num >= 1_000) {
+      return (num / 1_000).toFixed(num % 1_000 === 0 ? 0 : 1).replace(/\.0$/, "") + "k"
+    }
+    return num.toString()
+  }
 
   const chartData = React.useMemo(() => {
     if (isDark === null) return []
@@ -76,32 +87,28 @@ export function ExpensesByCategory({ data }: ExpensesByCategoryProps) {
         <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
           <PieChart>
             <ChartTooltip
-            cursor={false}
-            content={({ active, payload }: any) => {
+              cursor={false}
+              content={({ active, payload }: any) => {
                 if (!active || !payload || !payload.length) return null
                 const data = payload[0].payload
                 return (
-                <div className="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-md p-2 shadow-md text-sm">
-                    <div className="font-semibold text-gray-900 capitalize dark:text-white">{data.category}</div>
+                  <div className="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-md p-2 shadow-md text-sm">
+                    <div className="font-semibold text-gray-900 capitalize dark:text-white">
+                      {data.category}
+                    </div>
                     <div className="flex justify-between mt-1">
-                    <span className="text-gray-600 dark:text-gray-300">Transactions:</span>
-                    <span className="font-medium">{data.count}</span>
+                      <span className="text-gray-600 dark:text-gray-300">Transactions:</span>
+                      <span className="font-medium">{data.count}</span>
                     </div>
                     <div className="flex justify-between mt-0.5">
-                    <span className="text-gray-600 dark:text-gray-300">Total: </span>
-                    <span className="font-medium"> {data.total.toLocaleString()} Dhs</span>
+                      <span className="text-gray-600 dark:text-gray-300">Total:</span>
+                      <span className="font-medium">{data.total.toLocaleString()} Dhs</span>
                     </div>
-                </div>
+                  </div>
                 )
-            }}
+              }}
             />
-            <Pie
-              data={chartData}
-              dataKey="total"
-              nameKey="category"
-              innerRadius={60}
-              strokeWidth={5}
-            >
+            <Pie data={chartData} dataKey="total" nameKey="category" innerRadius={60} strokeWidth={5}>
               <Label
                 content={({ viewBox }) => {
                   if (!viewBox || !("cx" in viewBox && "cy" in viewBox)) return null
@@ -112,10 +119,7 @@ export function ExpensesByCategory({ data }: ExpensesByCategoryProps) {
                         y={viewBox.cy}
                         className="fill-foreground text-3xl font-bold"
                       >
-                        {totalExpenses.toLocaleString(undefined, {
-                          minimumFractionDigits: 0,
-                          maximumFractionDigits: 0,
-                        })}
+                        {formatCompactNumber(totalExpenses)}
                       </tspan>
                       <tspan
                         x={viewBox.cx}

@@ -36,6 +36,16 @@ export function LeadsBySourceChart({ data }: LeadsBySourceChartProps) {
 
   const totalLeads = Object.values(data).reduce((a, b) => a + b, 0)
 
+  // ✅ Format numbers like 5k, 5.3k, 1M, 1.25M
+  const formatCompactNumber = (num: number): string => {
+    if (num >= 1_000_000) {
+      return (num / 1_000_000).toFixed(num % 1_000_000 === 0 ? 0 : 2).replace(/\.0+$/, "") + "M"
+    } else if (num >= 1_000) {
+      return (num / 1_000).toFixed(num % 1_000 === 0 ? 0 : 1).replace(/\.0$/, "") + "k"
+    }
+    return num.toString()
+  }
+
   const chartData = React.useMemo(() => {
     if (isDark === null) return []
 
@@ -73,7 +83,7 @@ export function LeadsBySourceChart({ data }: LeadsBySourceChartProps) {
                   return (
                     <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
                       <tspan x={viewBox.cx} y={viewBox.cy} className="fill-foreground text-3xl font-bold">
-                        {totalLeads}
+                        {formatCompactNumber(totalLeads)}
                       </tspan>
                       <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 24} className="fill-muted-foreground">
                         Leads

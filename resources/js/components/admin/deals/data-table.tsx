@@ -97,7 +97,7 @@ export function DataTable<TData extends { client?: { id: number; name: string } 
                   table.getColumn("stage")?.setFilterValue(value === "all" ? "" : value)
                 }
               >
-                <SelectTrigger id="stageFilter" className="w-48">
+                <SelectTrigger id="stageFilter" className="sm:w-48 w-full">
                   <SelectValue placeholder="All stages" />
                 </SelectTrigger>
                 <SelectContent>
@@ -121,7 +121,7 @@ export function DataTable<TData extends { client?: { id: number; name: string } 
                   <Button
                     variant="outline"
                     role="combobox"
-                    className="w-48 justify-between"
+                    className="sm:w-48 w-full justify-between"
                   >
                     {clientFilter === "all"
                       ? "All Clients"
