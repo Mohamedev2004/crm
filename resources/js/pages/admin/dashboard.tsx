@@ -92,7 +92,7 @@ export default function Dashboard({ auth, stats, charts, tasks, salesPipeline }:
     <AppLayout breadcrumbs={breadcrumbs} user={auth.user}>
       <Head title="Dashboard" />
       <div className="flex flex-col gap-4 p-6 min-h-screen bg-white dark:bg-neutral-950 text-black dark:text-white">
-        <h1 className="text-2xl font-semibold">CRM Dashboard</h1>
+        <h1 className="text-2xl font-semibold">Analytics Dashboard</h1>
 
         {/* --- Stats Cards --- */}
         <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
