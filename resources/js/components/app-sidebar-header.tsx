@@ -15,13 +15,6 @@ import {
 } from 'lucide-react';
 
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
-
-import {
     Command,
     CommandEmpty,
     CommandGroup,
@@ -38,6 +31,7 @@ import {
 import { mainNavItems } from '@/components/app-sidebar';
 import type { BreadcrumbItem as BreadcrumbItemType } from '@/types';
 import { Badge } from './ui/badge';
+import { NativeDialog, NativeDialogContent, NativeDialogHeader, NativeDialogTitle } from './native-dialog';
 
 /* -----------------------------
    Types
@@ -237,38 +231,38 @@ export function AppSidebarHeader({
             </header>
 
             {/* Search Dialog */}
-            <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="p-0">
-                    <DialogHeader className="px-4 pt-4">
-                        <DialogTitle>Search Pages</DialogTitle>
-                    </DialogHeader>
+            <NativeDialog open={open} onOpenChange={setOpen}>
+                <NativeDialogContent className="p-0 sm:max-w-[480px]">
+                    <NativeDialogHeader className="px-4 pt-4">
+                    <NativeDialogTitle>Search Pages</NativeDialogTitle>
+                    </NativeDialogHeader>
 
                     <Command>
-                        <CommandInput placeholder="Type a page name..." />
-                        <CommandEmpty>No results found.</CommandEmpty>
+                    <CommandInput placeholder="Type a page name..." />
+                    <CommandEmpty>No results found.</CommandEmpty>
 
-                        <CommandGroup heading="Pages">
-                        {mainNavItems.flatMap(group => group.items).map((item) => {
-                            const Icon = item.icon;
+                    <CommandGroup heading="Pages" className='!bg-transparent'>
+                        {mainNavItems.flatMap((group) => group.items).map((item) => {
+                        const Icon = item.icon;
 
-                            return (
-                                <CommandItem
-                                    key={item.title}
-                                    onSelect={() => {
-                                        setOpen(false);
-                                        router.visit(item.href);
-                                    }}
-                                    className="flex items-center gap-2"
-                                >
-                                    {Icon && <Icon className="h-4 w-4" />}
-                                    {item.title}
-                                </CommandItem>
-                            );
+                        return (
+                            <CommandItem
+                            key={item.title}
+                            onSelect={() => {
+                                setOpen(false);
+                                router.visit(item.href);
+                            }}
+                            className="flex items-center gap-2"
+                            >
+                            {Icon && <Icon className="h-4 w-4" />}
+                            {item.title}
+                            </CommandItem>
+                        );
                         })}
-                        </CommandGroup>
+                    </CommandGroup>
                     </Command>
-                </DialogContent>
-            </Dialog>
+                </NativeDialogContent>
+            </NativeDialog>
         </>
     );
 }
