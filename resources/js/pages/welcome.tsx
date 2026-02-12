@@ -2,10 +2,10 @@
 "use client";
 
 import { Head, Link, usePage, router } from "@inertiajs/react";
+import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AuthLayout from "@/layouts/auth-layout";
 import { login } from "@/routes";
-import { LogOut } from "lucide-react";
 
 interface User {
   id: number;
@@ -56,7 +56,7 @@ export default function Welcome() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button className='text-black' asChild>
+              <Button className='' asChild>
                 <Link href="/dashboard">Dashboard</Link>
               </Button>
 

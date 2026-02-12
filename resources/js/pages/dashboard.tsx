@@ -6,10 +6,14 @@ import type { BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
+        title: 'Platform',
+        href: '#',},
+    {
         title: 'Dashboard',
         href: dashboard().url,
     },
 ];
+
 
 export default function Dashboard() {
     return (

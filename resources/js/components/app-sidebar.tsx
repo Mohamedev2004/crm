@@ -1,5 +1,14 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, SquareKanban, LayoutDashboard, ListChecks, Users, CalendarCheck2 } from 'lucide-react';
+import {
+    BookOpen,
+    Folder,
+    SquareKanban,
+    LayoutDashboard,
+    ListChecks,
+    Users,
+    CalendarCheck2,
+    BellRing,
+} from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -13,36 +22,57 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
-import type { NavItem } from '@/types';
+import type { NavGroup, NavItem } from '@/types';
 import AppLogo from './app-logo';
 
-const mainNavItems: NavItem[] = [
+export const mainNavItems: NavGroup[] = [
     {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutDashboard,
+        label: 'Platform',
+        items: [
+            {
+                title: 'Dashboard',
+                href: dashboard(),
+                icon: LayoutDashboard,
+            },
+        ],
     },
     {
-        title: 'Tasks',
-        href: 'admin/tasks',
-        icon: ListChecks,
+        label: 'Applications',
+        items: [
+            {
+                title: 'Tasks',
+                href: 'admin/tasks',
+                icon: ListChecks,
+            },
+            {
+                title: 'Pipeline',
+                href: 'admin/pipeline',
+                icon: SquareKanban,
+            },
+            {
+                title: 'Lists',
+                href: 'admin/lists',
+                icon: Users,
+            },
+            {
+                title: 'Calendar',
+                href: 'admin/calendar',
+                icon: CalendarCheck2,
+            },
+        ],
     },
     {
-        title: 'Pipeline',
-        href: 'admin/pipeline',
-        icon: SquareKanban,
-    },
-    {
-        title: 'Lists',
-        href: 'admin/lists',
-        icon: Users,
-    },
-    {
-        title: 'Calendar',
-        href: 'admin/calendar',
-        icon: CalendarCheck2,
+        label: 'Pages',
+        items: [
+            {
+                title: 'Notifications',
+                href: 'admin/notifications',
+                icon: BellRing,
+            },
+        ],
     },
 ];
+
 
 const footerNavItems: NavItem[] = [
     {
