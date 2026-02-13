@@ -181,7 +181,7 @@ export function AppSidebarHeader({
                                         className={`
                                         group relative flex gap-3 px-4 py-3 text-sm bg-card rounded-md shadow-md
                                         transform transition-all duration-300 ease-out
-                                        hover:scale-108 hover:rotate-2 hover:shadow-2xl hover:z-50
+                                        hover:scale-110 hover:shadow-2xl hover:z-50
                                         origin-center
                                         `}
                                         style={{
