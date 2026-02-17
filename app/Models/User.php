@@ -50,4 +50,10 @@ class User extends Authenticatable
             'two_factor_confirmed_at' => 'datetime',
         ];
     }
+
+    // Notifications Relationship
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
 }

@@ -7,7 +7,7 @@ import {
     ListChecks,
     Users,
     CalendarCheck2,
-    BellRing,
+    Bell,
 } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -67,7 +67,7 @@ export const mainNavItems: NavGroup[] = [
             {
                 title: 'Notifications',
                 href: 'admin/notifications',
-                icon: BellRing,
+                icon: Bell,
             },
         ],
     },
