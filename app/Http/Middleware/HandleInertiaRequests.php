@@ -47,11 +47,8 @@ class HandleInertiaRequests extends Middleware
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') 
                 || $request->cookie('sidebar_state') === 'true',
 
-            'notifications' => fn () => $request->user()
-            ? [
-                'latest' => $request->user()
-                    ->notifications()
-                    ->where('is_read', false)
+            'notifications' => [
+                'latest' => \App\Models\Notification::where('is_read', false)
                     ->latest()
                     ->take(5)
                     ->get()
@@ -62,14 +59,13 @@ class HandleInertiaRequests extends Middleware
                         'time' => $notification->created_at->diffForHumans(),
                     ]),
 
-                'unread_count' => $request->user()
-                    ->notifications()
-                    ->where('is_read', false)
-                    ->count(),
-            ]
-            : [
-                'latest' => [],
-                'unread_count' => 0,
+                'unread_count' => \App\Models\Notification::where('is_read', false)->count(),
+            ],
+
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'error'   => fn () => $request->session()->get('error'),
+                'warning' => fn () => $request->session()->get('warning'),
             ],
         ];
     }

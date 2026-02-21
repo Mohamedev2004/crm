@@ -2,14 +2,15 @@
 
 namespace Database\Seeders;
 
+use App\Models\Newsletter;
 use Illuminate\Database\Seeder;
-use App\Models\Notification;
+use App\Models\User;
 
-class NotificationSeeder extends Seeder
+class NewsletterSeeder extends Seeder
 {
     public function run(): void
     {
-        Notification::factory()
+        Newsletter::factory()
             ->count(15)
             ->create();
     }

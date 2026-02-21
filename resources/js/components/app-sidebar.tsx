@@ -8,6 +8,7 @@ import {
     Users,
     CalendarCheck2,
     Bell,
+    Mail,
 } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -40,23 +41,28 @@ export const mainNavItems: NavGroup[] = [
         label: 'Applications',
         items: [
             {
+                title: 'Newsletters',
+                href: '/admin/newsletters',
+                icon: Mail,
+            },
+            {
                 title: 'Tasks',
-                href: 'admin/tasks',
+                href: '/admin/tasks',
                 icon: ListChecks,
             },
             {
                 title: 'Pipeline',
-                href: 'admin/pipeline',
+                href: '/admin/pipeline',
                 icon: SquareKanban,
             },
             {
                 title: 'Lists',
-                href: 'admin/lists',
+                href: '/admin/lists',
                 icon: Users,
             },
             {
                 title: 'Calendar',
-                href: 'admin/calendar',
+                href: '/admin/calendar',
                 icon: CalendarCheck2,
             },
         ],
@@ -66,7 +72,7 @@ export const mainNavItems: NavGroup[] = [
         items: [
             {
                 title: 'Notifications',
-                href: 'admin/notifications',
+                href: '/admin/notifications',
                 icon: Bell,
             },
         ],

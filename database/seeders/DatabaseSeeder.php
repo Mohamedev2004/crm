@@ -2,19 +2,26 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use Database\Seeders\NotificationSeeder;
+use Database\Seeders\NewsletterSeeder;   
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
+        // Create a user first
+        User::factory()->create([
+            'name' => 'Admin',
+            'email' => 'admin@example.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        // Then seed notifications and newsletters
         $this->call([
             NotificationSeeder::class,
+            NewsletterSeeder::class,
         ]);
     }
 }
