@@ -4,7 +4,7 @@ import type { AppLayoutProps } from '@/types';
 
 export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => (
     <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
-        <Toaster position="bottom-center" />
+        <Toaster position="top-center" />
         {children}
     </AppLayoutTemplate>
 );

@@ -70,7 +70,7 @@ export function AppSidebarHeader({
                     {/* Search Trigger */}
                     <div
                         onClick={() => setOpen(true)}
-                        className="hidden md:flex h-9 w-[280px] cursor-pointer items-center gap-2 rounded-md border bg-background px-3 text-sm text-muted-foreground hover:bg-accent"
+                        className="hidden lg:flex h-9 w-[280px] cursor-pointer items-center gap-2 rounded-md border bg-background px-3 text-sm text-muted-foreground hover:bg-accent"
                     >
                         <Search className="h-4 w-4" />
                         <span className="flex-1">Search...</span>

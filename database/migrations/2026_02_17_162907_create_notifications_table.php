@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('message');
             $table->enum('type', [
                 'success',
-                'error',
+                'alert',
                 'warning',
                 'info'
             ]);

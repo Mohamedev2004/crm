@@ -56,12 +56,14 @@ export function NewsletterDataTable<TData>({
   const [searchInput, setSearchInput] = useState(filters.search ?? "");
 
   useEffect(() => {
+    if (searchInput === (filters.search ?? "")) return;
+
     const handler = setTimeout(() => {
       onFilterChange("search", searchInput);
-    }, 500); // attend 500ms après le dernier caractère tapé
+    }, 500);
 
     return () => clearTimeout(handler);
-  }, [searchInput, onFilterChange]);
+  }, [filters.search, onFilterChange, searchInput]);
 
   const selectedIds = Object.keys(rowSelection);
   const hasSelection = selectedIds.length > 0;
@@ -115,7 +117,7 @@ export function NewsletterDataTable<TData>({
           {/* Ajouter un abonné */}
           {onAddClick && (
             <Button variant="default" size="sm" onClick={onAddClick}>
-              <Plus className="mr-2 h-4 w-4" /> Ajouter un abonné
+              <Plus className="mr-2 h-4 w-4" /> Ajouter un Abonné
             </Button>
           )}
 

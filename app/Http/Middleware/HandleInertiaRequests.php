@@ -47,20 +47,18 @@ class HandleInertiaRequests extends Middleware
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') 
                 || $request->cookie('sidebar_state') === 'true',
 
-            'notifications' => [
-                'latest' => \App\Models\Notification::where('is_read', false)
-                    ->latest()
-                    ->take(5)
-                    ->get()
-                    ->map(fn ($notification) => [
-                        'id' => $notification->id,
-                        'title' => $notification->title,
-                        'type' => $notification->type,
-                        'time' => $notification->created_at->diffForHumans(),
-                    ]),
+            'latestNotifications' => \App\Models\Notification::where('is_read', false)
+                ->latest()
+                ->take(5)
+                ->get()
+                ->map(fn ($n) => [
+                    'id' => $n->id,
+                    'title' => $n->title,
+                    'type' => $n->type,
+                    'time' => $n->created_at->diffForHumans(),
+                ]),
 
-                'unread_count' => \App\Models\Notification::where('is_read', false)->count(),
-            ],
+            'unreadNotificationsCount' => \App\Models\Notification::where('is_read', false)->count(),
 
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),

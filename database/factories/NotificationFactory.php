@@ -8,7 +8,7 @@ class NotificationFactory extends Factory
 {
     public function definition(): array
     {
-        $types = ['success', 'error', 'warning', 'info'];
+        $types = ['success', 'alert', 'warning', 'info'];
 
         return [
             'title' => fake()->sentence(3, true),
