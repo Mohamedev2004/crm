@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PatientController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -20,6 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::prefix('admin')->group(function () {
+
         // NEWSLETTERS
         Route::prefix('newsletters')->name('newsletters.')->group(function () {
 
@@ -33,6 +35,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/{id}/restore', [NewsletterController::class, 'restore'])->name('restore');
             Route::post('/restore-all', [NewsletterController::class, 'restoreAll'])->name('restore-all');
             Route::post('/bulk-delete', [NewsletterController::class, 'bulkDelete'])->name('bulk-delete');
+        });
+
+        // PATIENTS
+        Route::prefix('patients')->name('patients.')->group(function () {
+
+            // CRUD operations
+            Route::get('/', [PatientController::class, 'index'])->name('index');
+            Route::post('/basic', [PatientController::class, 'storeBasicInfos'])->name('storeBasicInfos');
+            Route::post('/{patient}/medical', [PatientController::class, 'storeMedicalInfos'])->name('storeMedicalInfos');
+            Route::put('/{id}', [PatientController::class, 'updateBasicInfos'])->name('updateBasicInfos');
+            Route::put('/{patient}/medical', [PatientController::class, 'updateMedicalInfos'])->name('updateMedicalInfos');
+            Route::delete('/{id}', [PatientController::class, 'destroy'])->name('destroy');
+
+            // Restore & Bulk actions
+            Route::post('/{id}/restore', [PatientController::class, 'restore'])->name('restore');
+            Route::post('/restore-all', [PatientController::class, 'restoreAll'])->name('restore-all');
+            Route::post('/bulk-delete', [PatientController::class, 'bulkDelete'])->name('bulk-delete');
         });
 
         // NOTIFICATIONS
