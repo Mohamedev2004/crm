@@ -99,6 +99,7 @@ export default function NewsletterIndex({ newsletters, filters, flash }: Props) 
   };
 
   const hasSoftDeleted = pageData.some((n) => n.deleted_at !== null);
+  const hasNewsletters = pageData.length > 0;
 
   // ✅ Correct order of columns: onDelete, onRestore, onEdit
   const columns = createNewsletterColumns(
@@ -114,8 +115,10 @@ export default function NewsletterIndex({ newsletters, filters, flash }: Props) 
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Newsletters" />
 
-      <div className="w-full px-6 py-4 mx-auto">
-        <h2 className="text-2xl font-bold tracking-tight mb-4">Newsletters</h2>
+      <div className="w-full px-6 mx-auto">
+        {hasNewsletters && (
+        <h2 className="text-2xl font-bold tracking-tight mt-4">Newsletters</h2>
+        )}
 
         <NewsletterDataTable
           columns={columns}

@@ -1,7 +1,7 @@
 /* eslint-disable import/order */
 import { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { SidebarTrigger } from '@/components/ui/sidebar';
@@ -14,18 +14,18 @@ import {
     CommandItem,
 } from '@/components/ui/command';
 
-
-import { mainNavItems } from '@/components/app-sidebar';
+import { getMainNavItems } from '@/components/app-sidebar'; // ✅ import the function
 import type { BreadcrumbItem as BreadcrumbItemType } from '@/types';
 import { NativeDialog, NativeDialogContent, NativeDialogHeader, NativeDialogTitle } from './native-dialog';
 import { AppLatestNotifications } from './app-latest-notifications';
 
-export function AppSidebarHeader({
-    breadcrumbs = [],
-}: {
-    breadcrumbs?: BreadcrumbItemType[];
-}) {
+export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbItemType[] }) {
     const [open, setOpen] = useState(false);
+
+    const { props } = usePage<{ unreadNotificationsCount: number }>();
+    const unreadCount = props.unreadNotificationsCount || 0;
+
+    const mainNavItems = getMainNavItems(unreadCount); // ✅ get nav items dynamically
 
     /* -----------------------------
        Ctrl + K shortcut
@@ -34,13 +34,7 @@ export function AppSidebarHeader({
         const handler = (e: KeyboardEvent) => {
             const target = e.target as HTMLElement;
 
-            if (
-                target.tagName === 'INPUT' ||
-                target.tagName === 'TEXTAREA' ||
-                target.isContentEditable
-            ) {
-                return;
-            }
+            if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
 
             if (e.ctrlKey && e.key.toLowerCase() === 'k') {
                 e.preventDefault();
@@ -64,9 +58,6 @@ export function AppSidebarHeader({
 
                 {/* Right */}
                 <div className="flex items-center gap-2">
-                    {/* Notifications */}
-                    <AppLatestNotifications />
-
                     {/* Search Trigger */}
                     <div
                         onClick={() => setOpen(true)}
@@ -78,6 +69,8 @@ export function AppSidebarHeader({
                             ⌘ K
                         </kbd>
                     </div>
+                    {/* Notifications */}
+                    <AppLatestNotifications />
                 </div>
             </header>
 
@@ -85,32 +78,31 @@ export function AppSidebarHeader({
             <NativeDialog open={open} onOpenChange={setOpen}>
                 <NativeDialogContent className="p-0 sm:max-w-[480px]">
                     <NativeDialogHeader className="px-4 pt-4">
-                    <NativeDialogTitle>Search Pages</NativeDialogTitle>
+                        <NativeDialogTitle>Search Pages</NativeDialogTitle>
                     </NativeDialogHeader>
 
                     <Command>
-                    <CommandInput placeholder="Type a page name..." />
-                    <CommandEmpty>No results found.</CommandEmpty>
+                        <CommandInput placeholder="Type a page name..." />
+                        <CommandEmpty>No results found.</CommandEmpty>
 
-                    <CommandGroup heading="Pages" className='!bg-transparent'>
-                        {mainNavItems.flatMap((group) => group.items).map((item) => {
-                        const Icon = item.icon;
-
-                        return (
-                            <CommandItem
-                            key={item.title}
-                            onSelect={() => {
-                                setOpen(false);
-                                router.visit(item.href);
-                            }}
-                            className="flex items-center gap-2"
-                            >
-                            {Icon && <Icon className="h-4 w-4" />}
-                            {item.title}
-                            </CommandItem>
-                        );
-                        })}
-                    </CommandGroup>
+                        <CommandGroup heading="Pages" className="!bg-transparent">
+                            {mainNavItems.flatMap(group => group.items).map(item => {
+                                const Icon = item.icon;
+                                return (
+                                    <CommandItem
+                                        key={item.title}
+                                        onSelect={() => {
+                                            setOpen(false);
+                                            router.visit(item.href);
+                                        }}
+                                        className="flex items-center gap-2"
+                                    >
+                                        {Icon && <Icon className="h-4 w-4" />}
+                                        {item.title}
+                                    </CommandItem>
+                                );
+                            })}
+                        </CommandGroup>
                     </Command>
                 </NativeDialogContent>
             </NativeDialog>

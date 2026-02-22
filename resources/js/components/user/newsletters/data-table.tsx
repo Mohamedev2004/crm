@@ -9,9 +9,17 @@ import { DataTablePagination } from "@/components/data-table-pagination";
 import { DataTableViewOptions } from "@/components/data-table-view-options";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Undo2, Trash2, Plus } from "lucide-react"; // Added Plus icon
+import { Undo2, Trash2, Plus, FolderCode } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect, useState } from "react";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty"
 
 interface NewsletterDataTableProps<TData> {
   columns: any;
@@ -26,7 +34,7 @@ interface NewsletterDataTableProps<TData> {
   onFilterChange: (key: string, value: any) => void;
   onPerPageChange: (perPage: number) => void;
   onPageChange: (page: number) => void;
-  onAddClick?: () => void; // New prop for Add button
+  onAddClick?: () => void;
 }
 
 export function NewsletterDataTable<TData>({
@@ -42,7 +50,7 @@ export function NewsletterDataTable<TData>({
   onFilterChange,
   onPerPageChange,
   onPageChange,
-  onAddClick, // new
+  onAddClick,
 }: NewsletterDataTableProps<TData>) {
   const table = useReactTable({
     data,
@@ -57,11 +65,9 @@ export function NewsletterDataTable<TData>({
 
   useEffect(() => {
     if (searchInput === (filters.search ?? "")) return;
-
     const handler = setTimeout(() => {
       onFilterChange("search", searchInput);
     }, 500);
-
     return () => clearTimeout(handler);
   }, [filters.search, onFilterChange, searchInput]);
 
@@ -70,104 +76,110 @@ export function NewsletterDataTable<TData>({
 
   return (
     <div className="w-full">
-      {/* Barre d'outils */}
-      <div className="flex flex-wrap items-center justify-between gap-4 py-4">
-        {/* Filtres à gauche */}
-        <div className="flex items-center gap-4 flex-1 min-w-[250px]">
-          <Input
-            placeholder="Rechercher un courriel..."
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            className="max-w-xs"
-          />
 
-          <Select value={filters.trashed ?? "all"} onValueChange={(value) => onFilterChange("trashed", value)}>
-            <SelectTrigger className="w-36">
-              <SelectValue placeholder="Tous" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tous</SelectItem>
-              <SelectItem value="subscribed">Abonnés</SelectItem>
-              <SelectItem value="unsubscribed">Désabonnés</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+      {/* Empty state instead of table */}
+      {data.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20">
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon" className="bg-foreground">
+                <FolderCode className="text-background" />
+              </EmptyMedia>
+              <EmptyTitle>Aucun abonné trouvé</EmptyTitle>
+              <EmptyDescription>
+                Vous n&apos;avez aucun abonné pour le moment. Commencez par en ajouter un.
+              </EmptyDescription>
+            </EmptyHeader>
 
-        {/* Actions à droite */}
-        <div className="flex items-center gap-2">
-          {/* Suppression en masse */}
-          {hasSelection && onBulkDelete && (
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => onBulkDelete(selectedIds)}
-            >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Désabonner ({selectedIds.length})
-            </Button>
-          )}
-
-          {/* Restaurer tout */}
-          {hasSoftDeleted && (
-            <Button variant="outline" onClick={onRestoreAllClick}>
-              <Undo2 className="mr-2 h-4 w-4" /> Restaurer tout
-            </Button>
-          )}
-
-          {/* Ajouter un abonné */}
-          {onAddClick && (
-            <Button variant="default" size="sm" onClick={onAddClick}>
-              <Plus className="mr-2 h-4 w-4" /> Ajouter un Abonné
-            </Button>
-          )}
-
-          {/* Options de vue du tableau */}
-          <DataTableViewOptions table={table} />
-        </div>
-      </div>
-
-      {/* Tableau */}
-      <div className="rounded-md border overflow-hidden">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() ? "selected" : undefined}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  Aucun abonné trouvé.
-                </TableCell>
-              </TableRow>
+            {onAddClick && (
+              <EmptyContent className="flex-row justify-center gap-2">
+                <Button variant="default" size="sm" onClick={onAddClick}>
+                  <Plus className="mr-2 h-4 w-4" /> Ajouter un Abonné
+                </Button>
+              </EmptyContent>
             )}
-          </TableBody>
-        </Table>
-      </div>
+          </Empty>
+        </div>
+      ) : (
+        <>
+          {/* Barre d'outils */}
+          <div className="flex flex-wrap items-center justify-between gap-4 py-4">
+            <div className="flex items-center gap-4 flex-1 min-w-[250px]">
+              <Input
+                placeholder="Rechercher un courriel..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                className="max-w-xs"
+                />
 
-      {/* Pagination */}
-      <DataTablePagination
-        page={pagination.page}
-        pageCount={pagination.pageCount}
-        perPage={pagination.perPage}
-        onPageChange={onPageChange}
-        onPerPageChange={onPerPageChange}
-      />
+              <Select value={filters.trashed ?? "all"} onValueChange={(value) => onFilterChange("trashed", value)}>
+                <SelectTrigger className="w-36">
+                  <SelectValue placeholder="Tous" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tous</SelectItem>
+                  <SelectItem value="subscribed">Abonnés</SelectItem>
+                  <SelectItem value="unsubscribed">Désabonnés</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {hasSelection && onBulkDelete && (
+                <Button variant="destructive" size="sm" onClick={() => onBulkDelete(selectedIds)}>
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Désabonner ({selectedIds.length})
+                </Button>
+              )}
+              {hasSoftDeleted && (
+                <Button variant="outline" onClick={onRestoreAllClick}>
+                  <Undo2 className="mr-2 h-4 w-4" /> Restaurer tout
+                </Button>
+              )}
+              {onAddClick && (
+                <Button variant="default" size="sm" onClick={onAddClick}>
+                  <Plus className="mr-2 h-4 w-4" /> Ajouter un Abonné
+                </Button>
+              )}
+              <DataTableViewOptions table={table} />
+            </div>
+          </div>
+          {/* Tableau */}
+          <div className="rounded-md border overflow-hidden">
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead key={header.id}>
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id} data-state={row.getIsSelected() ? "selected" : undefined}>
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Pagination */}
+          <DataTablePagination
+            page={pagination.page}
+            pageCount={pagination.pageCount}
+            perPage={pagination.perPage}
+            onPageChange={onPageChange}
+            onPerPageChange={onPerPageChange}
+          />
+        </>
+      )}
     </div>
   );
 }

@@ -1,11 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable import/order */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 "use client";
 
-import React, { useMemo, useState } from "react";
-import { Head } from "@inertiajs/react";
+import { useEffect, useRef, useState } from "react";
+import { Head, router } from "@inertiajs/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, ChevronDown, Filter, Search } from "lucide-react";
+import { BellRing, Check, ChevronDown, Filter, Search } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
 
@@ -14,6 +15,8 @@ import { BreadcrumbItem } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 
 interface Notification {
   id: number;
@@ -24,12 +27,27 @@ interface Notification {
   created_at: string;
 }
 
+interface Pagination<T> {
+  data: T[];
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}
+
+interface Filters {
+  search?: string;
+  types?: Notification["type"][];
+  perPage?: number;
+}
+
 interface NotificationsProps {
-  notifications: Notification[];
+  notifications: Pagination<Notification>;
+  filters: Filters;
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: "Plateforme", href: "#" },
+  { title: "Application", href: "#" },
   { title: "Notifications", href: "/notifications" },
 ];
 
@@ -40,7 +58,6 @@ const typeStyles: Record<Notification["type"], string> = {
   alert: "bg-red-500/10 text-red-600 dark:text-red-400",
 };
 
-/* 🔥 French Labels */
 const typeLabels: Record<Notification["type"], string> = {
   success: "Succès",
   info: "Information",
@@ -48,26 +65,21 @@ const typeLabels: Record<Notification["type"], string> = {
   alert: "Alerte",
 };
 
-export default function Notifications({
-  notifications: initial,
-}: NotificationsProps) {
-  const [notifications, setNotifications] =
-    useState<Notification[]>(initial);
+export default function Notifications({ notifications, filters }: NotificationsProps) {
+  const items = notifications.data ?? [];
+
   const [expandedId, setExpandedId] = useState<number | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(filters.search ?? "");
   const [showFilters, setShowFilters] = useState(false);
-  const [filters, setFilters] = useState<{ type: Notification["type"][] }>({
-    type: [],
-  });
+  const [perPage, setPerPage] = useState(filters.perPage ?? notifications.per_page);
+  const [selectedTypes, setSelectedTypes] = useState<Notification["type"][]>(filters.types ?? []);
+
+  const searchInitialized = useRef(false);
 
   const markAsRead = async (id: number) => {
     try {
       await axios.post(`/admin/notifications/${id}/mark-as-read`);
-      setNotifications((prev) =>
-        prev.map((n) =>
-          n.id === id ? { ...n, is_read: true } : n
-        )
-      );
+      router.reload({ only: ["notifications"] });
       toast.success("Notification marquée lue");
     } catch {
       toast.error("Erreur lors du marquage");
@@ -77,55 +89,99 @@ export default function Notifications({
   const markAllAsRead = async () => {
     try {
       await axios.post(`/admin/notifications/mark-all-as-read`);
-      setNotifications((prev) =>
-        prev.map((n) => ({ ...n, is_read: true }))
-      );
+      router.reload({ only: ["notifications"] });
       toast.success("Toutes les notifications ont été marquées lues");
     } catch {
       toast.error("Erreur lors du marquage global");
     }
   };
 
-  const filteredNotifications = useMemo(() => {
-    return notifications.filter((n) => {
-      const matchSearch =
-        n.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        n.message.toLowerCase().includes(searchQuery.toLowerCase());
-
-      const matchType =
-        filters.type.length === 0 ||
-        filters.type.includes(n.type);
-
-      return matchSearch && matchType;
-    });
-  }, [notifications, searchQuery, filters]);
-
   const toggleFilter = (type: Notification["type"]) => {
-    setFilters((current) => ({
-      type: current.type.includes(type)
-        ? current.type.filter((t) => t !== type)
-        : [...current.type, type],
-    }));
+    setSelectedTypes((current) => {
+      const next = current.includes(type) ? current.filter((t) => t !== type) : [...current, type];
+      goToPage(1, next, searchQuery, perPage);
+      return next;
+    });
   };
 
-  const activeFilters = filters.type.length;
+  const goToPage = (
+    page: number,
+    types: Notification["type"][] = selectedTypes,
+    search: string = searchQuery,
+    perPageValue: number = perPage
+  ) => {
+    const query = {
+      search: search || undefined,
+      types: types.length ? types : undefined,
+      page,
+      perPage: perPageValue,
+    };
+
+    router.get(route("notifications.index"), query, {
+      preserveState: true,
+      replace: true,
+      preserveScroll: true,
+    });
+  };
+
+  // Handle search input with debounce
+  useEffect(() => {
+    if (!searchInitialized.current) {
+      searchInitialized.current = true;
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      goToPage(1, selectedTypes, searchQuery, perPage);
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [searchQuery, selectedTypes, perPage]);
+
+  const handlePageChange = (page: number) => {
+    goToPage(page);
+  };
+
+  const handlePerPageChange = (value: number) => {
+    setPerPage(value);
+    goToPage(1, selectedTypes, searchQuery, value);
+  };
+
+  const activeFilters = selectedTypes.length;
+  const hasNotifications = notifications.data.length > 0;
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Notifications" />
 
-      <div className="flex h-full flex-col bg-background">
+      {!hasNotifications ? (
+        <div className="flex flex-col items-center justify-center py-20">
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon" className="bg-foreground">
+                <BellRing className="text-background" />
+              </EmptyMedia>
+              <EmptyTitle>Aucune notification</EmptyTitle>
+              <EmptyDescription>
+                Vous n&apos;avez aucune notification pour le moment.
+              </EmptyDescription>
+            </EmptyHeader>
 
+            {/* <EmptyContent className="flex-row justify-center gap-2">
+              <Button variant="default" size="sm">
+                <Plus className="mr-2 h-4 w-4" /> Ajouter une notification
+              </Button>
+            </EmptyContent> */}
+          </Empty>
+        </div>
+      ) : (
+      <div className="flex flex-col bg-background">
+          <>
         {/* HEADER */}
-        <div className="bg-card p-6">
+        <div className="bg-card px-6 py-4">
           <div className="space-y-4">
             <div>
-              <h1 className="text-2xl font-semibold">
-                Notifications
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                {filteredNotifications.length} sur {notifications.length}
-              </p>
+              <h1 className="text-2xl font-semibold">Notifications ({notifications.total})</h1>
             </div>
 
             <div className="flex gap-2 relative">
@@ -134,9 +190,7 @@ export default function Notifications({
                 <Input
                   placeholder="Rechercher..."
                   value={searchQuery}
-                  onChange={(e) =>
-                    setSearchQuery(e.target.value)
-                  }
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="h-9 pl-9 text-sm"
                 />
               </div>
@@ -144,20 +198,21 @@ export default function Notifications({
               <Button
                 variant={showFilters ? "default" : "outline"}
                 size="sm"
-                onClick={() =>
-                  setShowFilters((prev) => !prev)
-                }
+                onClick={() => setShowFilters((prev) => !prev)}
                 className="relative"
               >
                 <Filter className="h-4 w-4" />
                 {activeFilters > 0 && (
-                  <Badge variant='default' className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center p-0 text-xs">
+                  <Badge
+                    variant="default"
+                    className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center p-0 text-xs"
+                  >
                     {activeFilters}
                   </Badge>
                 )}
               </Button>
 
-              {notifications.length > 0 && (
+              {notifications.data.length > 0 && (
                 <Button size="sm" onClick={markAllAsRead}>
                   <Check className="w-4 h-4 mr-2" />
                   Tout Marquer
@@ -169,8 +224,6 @@ export default function Notifications({
 
         {/* BODY */}
         <div className="flex overflow-hidden mx-6 border border-border rounded-lg">
-
-          {/* FILTER PANEL */}
           <AnimatePresence initial={false}>
             {showFilters && (
               <motion.div
@@ -181,80 +234,51 @@ export default function Notifications({
                 className="overflow-hidden border-r border-border bg-card"
               >
                 <div className="p-4 space-y-4">
-                  <h3 className="text-sm font-semibold">
-                    Filtrer par type
-                  </h3>
+                  <h3 className="text-sm font-semibold">Filtrer par type</h3>
 
-                  {(["success", "info", "warning", "alert"] as Notification["type"][]).map(
-                    (type) => (
-                      <Button
-                        key={type}
-                        variant={
-                          filters.type.includes(type)
-                            ? "default"
-                            : "outline"
-                        }
-                        size="sm"
-                        onClick={() => toggleFilter(type)}
-                        className="w-full"
-                      >
-                        {typeLabels[type]}
-                      </Button>
-                    )
-                  )}
+                  {(["success", "info", "warning", "alert"] as Notification["type"][]).map((type) => (
+                    <Button
+                      key={type}
+                      variant={selectedTypes.includes(type) ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => toggleFilter(type)}
+                      className="w-full"
+                    >
+                      {typeLabels[type]}
+                    </Button>
+                  ))}
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* LIST */}
           <div className="flex-1 overflow-y-auto divide-y divide-border">
-
             <AnimatePresence mode="popLayout">
-              {filteredNotifications.length > 0 ? (
-                filteredNotifications.map((n, index) => (
+              {items.length > 0 ? (
+                items.map((n, index) => (
                   <motion.div
                     key={n.id}
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    transition={{
-                      duration: 0.2,
-                      delay: index * 0.02,
-                    }}
+                    transition={{ duration: 0.2, delay: index * 0.02 }}
                   >
                     <motion.button
-                      onClick={() =>
-                        setExpandedId((prev) =>
-                          prev === n.id ? null : n.id
-                        )
-                      }
+                      onClick={() => setExpandedId((prev) => (prev === n.id ? null : n.id))}
                       className={`w-full p-4 text-left transition-colors hover:bg-muted/50 border-b border-border ${
                         n.is_read ? "bg-muted/40" : ""
                       }`}
                     >
                       <div className="flex items-center gap-4">
-                        <motion.div
-                          animate={{
-                            rotate:
-                              expandedId === n.id
-                                ? 180
-                                : 0,
-                          }}
-                        >
+                        <motion.div animate={{ rotate: expandedId === n.id ? 180 : 0 }}>
                           <ChevronDown className="h-4 w-4 text-muted-foreground" />
                         </motion.div>
 
-                        <Badge
-                          variant="secondary"
-                          className={typeStyles[n.type]}
-                        >
+                        <Badge variant="secondary" className={typeStyles[n.type]}>
                           {typeLabels[n.type]}
                         </Badge>
 
-                        <span className="flex-1 truncate font-medium text-sm">
-                          {n.title}
-                        </span>
+                        <span className="flex-1 truncate font-medium text-sm">{n.title}</span>
 
                         {!n.is_read && (
                           <Button
@@ -273,30 +297,31 @@ export default function Notifications({
                     <AnimatePresence>
                       {expandedId === n.id && (
                         <motion.div
-                          initial={{
-                            height: 0,
-                            opacity: 0,
-                          }}
-                          animate={{
-                            height: "auto",
-                            opacity: 1,
-                          }}
-                          exit={{
-                            height: 0,
-                            opacity: 0,
-                          }}
-                          transition={{
-                            duration: 0.2,
-                          }}
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
                           className="overflow-hidden bg-muted/50 border-t border-border"
                         >
-                          <div className="p-4">
-                            <p className="text-xs font-semibold uppercase text-muted-foreground mb-2">
-                              Message
-                            </p>
-                            <p className="p-3 rounded font-mono text-sm">
-                              {n.message} - {n.created_at}
-                            </p>
+                          <div className="p-4 space-y-2">
+                            {/* Header */}
+                            <div className="flex items-center justify-between">
+                              <p className="text-xs font-semibold uppercase text-muted-foreground">
+                                Message
+                              </p>
+                              <Badge variant="outline" className="text-xs">
+                                {new Date(n.created_at).toLocaleDateString("fr-FR", {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                })}
+                              </Badge>
+                            </div>
+
+                            {/* Message content */}
+                            <div className="p-3 rounded-md bg-background shadow-sm text-sm font-sans break-words">
+                              {n.message}
+                            </div>
                           </div>
                         </motion.div>
                       )}
@@ -304,21 +329,57 @@ export default function Notifications({
                   </motion.div>
                 ))
               ) : (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="p-12 text-center"
-                >
-                  <p className="text-muted-foreground">
-                    Aucune notification ne correspond aux filtres.
-                  </p>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-12 text-center">
+                  <p className="text-muted-foreground">Aucune notification ne correspond aux filtres.</p>
                 </motion.div>
               )}
             </AnimatePresence>
 
+            {notifications.last_page && (
+              <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-background">
+                <p className="text-xs text-muted-foreground">
+                  Page {notifications.current_page} sur {notifications.last_page}
+                </p>
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-muted-foreground">Par page :</span>
+                  <Select onValueChange={(v) => handlePerPageChange(Number(v))} value={String(perPage)}>
+                    <SelectTrigger className="h-8 w-16">
+                      <SelectValue placeholder="Par page" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[5, 10, 20, 30, 50].map((n) => (
+                        <SelectItem key={n} value={String(n)}>
+                          {n}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={notifications.current_page <= 1}
+                    onClick={() => handlePageChange(notifications.current_page - 1)}
+                  >
+                    Précédent
+                  </Button>
+
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={notifications.current_page >= notifications.last_page}
+                    onClick={() => handlePageChange(notifications.current_page + 1)}
+                  >
+                    Suivant
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
+          </>
       </div>
+      )}
     </AppLayout>
   );
 }

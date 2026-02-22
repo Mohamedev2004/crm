@@ -2,18 +2,19 @@ import type { InertiaLinkProps } from '@inertiajs/react';
 import type { LucideIcon } from 'lucide-react';
 
 export type BreadcrumbItem = {
-    title: string;
-    href: string;
+  title: string;
+  href: string;
 };
 
 export type NavItem = {
-    title: string;
-    href: NonNullable<InertiaLinkProps['href']>;
-    icon?: LucideIcon | null;
-    isActive?: boolean;
+  title: string;
+  href: NonNullable<InertiaLinkProps['href']>;
+  icon?: LucideIcon | null;
+  isActive?: boolean;
+  badge?: number | null; 
 };
 
 export type NavGroup = {
-    label: string;
-    items: NavItem[];
+  label: string;
+  items: NavItem[];
 };

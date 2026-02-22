@@ -3,6 +3,7 @@ import {
     SidebarGroup,
     SidebarGroupLabel,
     SidebarMenu,
+    SidebarMenuBadge,
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
@@ -31,6 +32,7 @@ export function NavMain({ items = [] }: { items: NavGroup[] }) {
                                     <Link href={item.href} prefetch>
                                         {item.icon && <item.icon />}
                                         <span>{item.title}</span>
+                                        {item.badge && <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>}
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>

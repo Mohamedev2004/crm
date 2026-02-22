@@ -27,7 +27,7 @@ export function DataTablePagination({
     <div className="flex items-center justify-end px-2 py-4">
       <div className="flex items-center justify-end space-x-6 lg:space-x-8">
         <div className="sm:flex hidden items-center space-x-2">
-          <p className="text-sm font-medium">Rows</p>
+          <p className="text-sm font-medium">Par page</p>
           <Select
             value={`${perPage}`}
             onValueChange={(value) => onPerPageChange(Number(value))}
@@ -45,7 +45,7 @@ export function DataTablePagination({
           </Select>
         </div>
         <div className="flex items-center justify-center text-sm font-medium">
-          Page {page} of {pageCount}
+          Page {page} sur {pageCount}
         </div>
         <div className="flex items-center space-x-2">
           <Button

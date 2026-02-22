@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import {
     BookOpen,
     Folder,
@@ -26,59 +26,69 @@ import { dashboard } from '@/routes';
 import type { NavGroup, NavItem } from '@/types';
 import AppLogo from './app-logo';
 
-export const mainNavItems: NavGroup[] = [
-    {
-        label: 'Platform',
-        items: [
-            {
-                title: 'Dashboard',
-                href: dashboard(),
-                icon: LayoutDashboard,
-            },
-        ],
-    },
-    {
-        label: 'Applications',
-        items: [
-            {
-                title: 'Newsletters',
-                href: '/admin/newsletters',
-                icon: Mail,
-            },
-            {
-                title: 'Tasks',
-                href: '/admin/tasks',
-                icon: ListChecks,
-            },
-            {
-                title: 'Pipeline',
-                href: '/admin/pipeline',
-                icon: SquareKanban,
-            },
-            {
-                title: 'Lists',
-                href: '/admin/lists',
-                icon: Users,
-            },
-            {
-                title: 'Calendar',
-                href: '/admin/calendar',
-                icon: CalendarCheck2,
-            },
-        ],
-    },
-    {
-        label: 'Pages',
-        items: [
-            {
-                title: 'Notifications',
-                href: '/admin/notifications',
-                icon: Bell,
-            },
-        ],
-    },
-];
-
+/**
+ * Exported nav items so they can be imported elsewhere if needed
+ */
+export function getMainNavItems(unreadCount: number): NavGroup[] {
+    return [
+        {
+            label: 'Application',
+            items: [
+                {
+                    title: 'Dashboard',
+                    href: dashboard(),
+                    icon: LayoutDashboard,
+                },
+                {
+                    title: 'Notifications',
+                    href: '/admin/notifications',
+                    icon: Bell,
+                    badge: unreadCount,
+                },
+            ],
+        },
+        {
+            label: 'Crm Tools',
+            items: [
+                {
+                    title: 'Patients',
+                    href: '/admin/patients',
+                    icon: Users,
+                },
+                {
+                    title: 'Newsletters',
+                    href: '/admin/newsletters',
+                    icon: Mail,
+                },
+                {
+                    title: 'Tasks',
+                    href: '/admin/tasks',
+                    icon: ListChecks,
+                },
+                {
+                    title: 'Pipeline',
+                    href: '/admin/pipeline',
+                    icon: SquareKanban,
+                },
+                {
+                    title: 'Calendar',
+                    href: '/admin/calendar',
+                    icon: CalendarCheck2,
+                },
+            ],
+        },
+        {
+            label: 'Pages',
+            items: [
+                {
+                    title: 'Call to Action',
+                    href: '/admin/cta',
+                    icon: Bell,
+                },
+            ],
+        },
+    ];
+}
 
 const footerNavItems: NavItem[] = [
     {
@@ -94,6 +104,11 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { props } = usePage<{ unreadNotificationsCount: number }>();
+    const unreadCount = props.unreadNotificationsCount || 0;
+
+    const mainNavItems = getMainNavItems(unreadCount);
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
