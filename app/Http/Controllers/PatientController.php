@@ -183,6 +183,15 @@ class PatientController extends Controller
         return back()->with('success', 'Infos médicales mises à jour avec succès.');
     }
 
+    public function show(Patient $patient)
+    {
+        $patient->load('reports');
+
+        return inertia('user/patient-details', [
+            'patient' => $patient,
+        ]);
+    }
+
     /**
      * Delete patient (soft delete)
      */

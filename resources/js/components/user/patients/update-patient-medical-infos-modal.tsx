@@ -10,11 +10,16 @@ import {
   NativeDialogDescription,
   NativeDialogFooter,
 } from "@/components/native-dialog";
-import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect } from "react";
 
 import type { Patient } from "@/types/patient";
@@ -86,25 +91,54 @@ export const UpdatePatientMedicalModal = ({
             {/* Blood Group */}
             <div className="flex flex-col">
               <Label className="mb-2">Groupe sanguin</Label>
-              <Input
+
+              <Select
                 value={data.blood_group}
-                onChange={(e) => setData("blood_group", e.target.value)}
-                placeholder="A+, O-, B+..."
-              />
+                onValueChange={(value) => setData("blood_group", value)}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Sélectionner un groupe sanguin" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectItem value="A+">A+</SelectItem>
+                  <SelectItem value="A-">A-</SelectItem>
+                  <SelectItem value="B+">B+</SelectItem>
+                  <SelectItem value="B-">B-</SelectItem>
+                  <SelectItem value="AB+">AB+</SelectItem>
+                  <SelectItem value="AB-">AB-</SelectItem>
+                  <SelectItem value="O+">O+</SelectItem>
+                  <SelectItem value="O-">O-</SelectItem>
+                </SelectContent>
+              </Select>
+
               {errors.blood_group && (
-                <p className="text-red-500 text-sm mt-1">{errors.blood_group}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.blood_group}
+                </p>
               )}
             </div>
 
+
             {/* Pregnancy */}
-            <div className="flex items-center space-x-2 mt-6">
-              <Checkbox
-                checked={data.is_pregnant}
-                onCheckedChange={(value) =>
-                  setData("is_pregnant", !!value)
+            <div className="flex flex-col">
+              <Label className="mb-2">Patiente enceinte</Label>
+
+              <Select
+                value={data.is_pregnant ? "true" : "false"}
+                onValueChange={(value) =>
+                  setData("is_pregnant", value === "true")
                 }
-              />
-              <Label>Patiente enceinte</Label>
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Sélectionner une option" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectItem value="true">Oui</SelectItem>
+                  <SelectItem value="false">Non</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Allergies */}

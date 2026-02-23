@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 
 import { ColumnDef } from "@tanstack/react-table";
-import { CircleCheck, CircleX, MoreHorizontal, SquarePen, Trash2, Undo2 } from "lucide-react";
+import { CircleCheck, CircleX, Eye, MoreHorizontal, SquarePen, Trash2, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -17,6 +17,7 @@ import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 
 import type { Patient } from "@/types/patient";
+import { router } from "@inertiajs/react";
 
 interface CreatePatientColumnsProps {
   onDelete: (patient: Patient) => void;
@@ -314,6 +315,12 @@ export const createPatientColumns = ({
 
             {!isDeleted && (
               <>
+              <DropdownMenuItem
+                onClick={() => router.get(route("patients.show", patient.id))}
+              >
+                <Eye className="mr-2 h-4 w-4" />
+                Voir
+              </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => onEdit(patient)}>
                   <SquarePen className="mr-2 h-4 w-4" />
                   Modifier les infos de base

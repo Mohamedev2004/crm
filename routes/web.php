@@ -42,6 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
             // CRUD operations
             Route::get('/', [PatientController::class, 'index'])->name('index');
+            Route::get('/{patient}', [PatientController::class, 'show'])->name('show');
             Route::post('/basic', [PatientController::class, 'storeBasicInfos'])->name('storeBasicInfos');
             Route::post('/{patient}/medical', [PatientController::class, 'storeMedicalInfos'])->name('storeMedicalInfos');
             Route::put('/{id}', [PatientController::class, 'updateBasicInfos'])->name('updateBasicInfos');
