@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\KanbanController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PatientController;
@@ -73,6 +74,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/selected/in-progress', [TaskController::class, 'setSelectedInProgress'])->name('setSelectedInProgress');
             Route::post('/selected/pending', [TaskController::class, 'setSelectedPending'])->name('setSelectedPending');
         });
+
+        // KANBAN
+        Route::get('/kanban', [KanbanController::class, 'index'])->name('kanban');
+        Route::post('/kanban', [KanbanController::class, 'store'])->name('kanban.store');
+        Route::patch('/kanban/{task}/status', [KanbanController::class, 'updateStatus'])->name('kanban.updateStatus');
 
         // NOTIFICATIONS
         Route::prefix('notifications')->name('notifications.')->group(function () {

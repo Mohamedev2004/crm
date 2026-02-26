@@ -67,7 +67,7 @@ export function getMainNavItems(unreadCount: number): NavGroup[] {
                 },
                 {
                     title: 'Pipeline',
-                    href: '/admin/pipeline',
+                    href: '/admin/kanban',
                     icon: SquareKanban,
                 },
                 {

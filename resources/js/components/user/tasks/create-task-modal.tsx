@@ -30,6 +30,7 @@ interface CreateTaskModalProps {
   patients?: { id: number; name: string }[];
   open?: boolean;
   onOpenChange?: (v: boolean) => void;
+  initialStatus?: "pending" | "in_progress" | "done" | "overdue";
 }
 
 export default function CreateTaskSheet({
@@ -37,6 +38,7 @@ export default function CreateTaskSheet({
   patients = [],
   open,
   onOpenChange,
+  initialStatus = "pending",
 }: CreateTaskModalProps) {
   const [internalOpen, setInternalOpen] = useState(false);
 
@@ -50,6 +52,7 @@ export default function CreateTaskSheet({
     due_date: "",
     priority: "medium" as TaskPriority,
     patient_id: "" as number | "",
+    status: initialStatus,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -66,10 +69,11 @@ export default function CreateTaskSheet({
     }
 
     router.post(
-      route("tasks.store"),
+      route("kanban.store"),
       {
         ...taskData,
         patient_id: taskData.patient_id || null,
+        status: initialStatus,
       },
       {
         preserveScroll: true,
@@ -82,6 +86,7 @@ export default function CreateTaskSheet({
             due_date: "",
             priority: "medium",
             patient_id: "",
+            status: initialStatus,
           });
           onTaskCreated();
         },

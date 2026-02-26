@@ -212,7 +212,7 @@ export const CreatePatientModal = ({ open, onOpenChange, onSuccess }: Props) => 
                 onValueChange={(val) => step2Form.setData("blood_group", val)}
                 >
                 <SelectTrigger>
-                    <SelectValue placeholder="Sélectionnez un groupe sanguin" />
+                    <SelectValue placeholder="Sélectionnez un groupe" />
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="A+">A+</SelectItem>
