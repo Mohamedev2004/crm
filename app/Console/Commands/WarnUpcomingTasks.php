@@ -29,7 +29,7 @@ class WarnUpcomingTasks extends Command
 
             Notification::create([
                 'title'   => 'Rappel de tâche',
-                'message' => "La tâche \"{$task->title}\" arrive à échéance à {$task->due_date}.",
+                'message' => "La tâche \"{$task->title}\" arrive à échéance dans 1 heure.",
                 'type'    => 'warning',
                 'is_read' => false,
             ]);
