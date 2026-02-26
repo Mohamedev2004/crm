@@ -207,25 +207,7 @@ class PatientController extends Controller
         $query = $patient->reports();
 
         if (! empty($search)) {
-            if (is_numeric($search)) {
-                // Find the ID of the report that has this sequence number
-                // Sequence is determined by created_at ASC, then id ASC
-                $targetReportId = $patient->reports()
-                    ->orderBy('created_at', 'asc')
-                    ->orderBy('id', 'asc')
-                    ->offset((int) $search - 1)
-                    ->limit(1)
-                    ->value('id');
-
-                if ($targetReportId) {
-                    $query->where('id', $targetReportId);
-                } else {
-                    $query->whereRaw('1 = 0'); // Force no results if number doesn't exist
-                }
-            } else {
-                // If search is not numeric, fallback to ID search (though user requested number)
-                $query->where('id', 'like', "%{$search}%");
-            }
+            $query->where('id', 'like', "%{$search}%");
         }
 
         $query->orderBy($sortBy, $sortDir);

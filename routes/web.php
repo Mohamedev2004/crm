@@ -4,6 +4,7 @@ use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -59,6 +60,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/{id}/restore', [PatientController::class, 'restore'])->name('restore');
             Route::post('/restore-all', [PatientController::class, 'restoreAll'])->name('restore-all');
             Route::post('/bulk-delete', [PatientController::class, 'bulkDelete'])->name('bulk-delete');
+        });
+
+        // TASKS
+        Route::prefix('tasks')->name('tasks.')->group(function () {
+            Route::get('/', [TaskController::class, 'index'])->name('index');
+            Route::post('/', [TaskController::class, 'store'])->name('store');
+            Route::put('/{task}', [TaskController::class, 'update'])->name('update');
+            Route::delete('/{task}', [TaskController::class, 'destroy'])->name('destroy');
+            Route::put('/{task}/status', [TaskController::class, 'updateStatus'])->name('updateStatus');
+            Route::post('/selected/done', [TaskController::class, 'setSelectedDone'])->name('setSelectedDone');
+            Route::post('/selected/in-progress', [TaskController::class, 'setSelectedInProgress'])->name('setSelectedInProgress');
+            Route::post('/selected/pending', [TaskController::class, 'setSelectedPending'])->name('setSelectedPending');
         });
 
         // NOTIFICATIONS

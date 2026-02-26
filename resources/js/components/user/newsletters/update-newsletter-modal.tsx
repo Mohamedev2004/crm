@@ -2,7 +2,14 @@
 "use client";
 
 import { useForm } from "@inertiajs/react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui/sheet";
+import {
+  NativeDialog,
+  NativeDialogContent,
+  NativeDialogHeader,
+  NativeDialogTitle,
+  NativeDialogDescription,
+  NativeDialogFooter,
+} from "@/components/native-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -51,12 +58,12 @@ export const UpdateNewsletterModal = ({ open, onOpenChange, selectedSubscriber, 
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="max-w-md">
-        <SheetHeader>
-          <SheetTitle>Modifier l’abonné</SheetTitle>
-          <SheetDescription>Mettre à jour les informations de l’abonné.</SheetDescription>
-        </SheetHeader>
+    <NativeDialog open={open} onOpenChange={onOpenChange}>
+      <NativeDialogContent className="max-w-md">
+        <NativeDialogHeader>
+          <NativeDialogTitle>Modifier l’abonné</NativeDialogTitle>
+          <NativeDialogDescription>Mettre à jour les informations de l’abonné.</NativeDialogDescription>
+        </NativeDialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 gap-3 mx-4">
@@ -71,13 +78,13 @@ export const UpdateNewsletterModal = ({ open, onOpenChange, selectedSubscriber, 
             </div>
           </div>
 
-          <SheetFooter>
-            <Button type="submit" disabled={processing} className="w-full mt-2" size='sm'>
+          <NativeDialogFooter>
+            <Button type="submit" disabled={processing} className="w-full mt-2" size="sm">
               Mettre à jour l’abonné
             </Button>
-          </SheetFooter>
+          </NativeDialogFooter>
         </form>
-      </SheetContent>
-    </Sheet>
+      </NativeDialogContent>
+    </NativeDialog>
   );
 };

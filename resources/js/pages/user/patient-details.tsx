@@ -127,6 +127,7 @@ export default function PatientDetails({ patient, reports, filters }: Props) {
       <Head title="Détails Patient" />
 
       <div className="px-6 py-6 space-y-8">
+        <h3 className="text-xl font-semibold mb-4">Informations de {patient.first_name} {patient.last_name}</h3>
         {/* ================= PATIENT INFO ================= */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card className="bg-sidebar">
