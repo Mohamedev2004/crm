@@ -37,10 +37,19 @@ export function UpdateTaskModal({
 }: Props) {
   const { updateTask } = useTaskActions();
 
-  // Format date to YYYY-MM-DD for input type="date"
+  // Format to YYYY-MM-DDTHH:MM for input type="datetime-local"
   const formatDateForInput = (dateStr: string) => {
     if (!dateStr) return "";
-    return dateStr.split("T")[0];
+    const normalized = dateStr.replace(" ", "T");
+    const d = new Date(normalized);
+    if (isNaN(d.getTime())) return "";
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const yyyy = d.getFullYear();
+    const mm = pad(d.getMonth() + 1);
+    const dd = pad(d.getDate());
+    const hh = pad(d.getHours());
+    const mi = pad(d.getMinutes());
+    return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
   };
 
   const [formData, setFormData] = useState({
@@ -114,7 +123,7 @@ export function UpdateTaskModal({
           <div>
             <Label>Date d'échéance</Label>
             <Input
-              type="date"
+              type="datetime-local"
               value={formData.due_date}
               onChange={(e) =>
                 setFormData({ ...formData, due_date: e.target.value })

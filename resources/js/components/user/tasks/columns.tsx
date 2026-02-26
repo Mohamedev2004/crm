@@ -152,8 +152,10 @@ export const createTaskColumns = (
             />
         ),
         cell: ({ row }) => {
-            const date = new Date(row.getValue('due_date'));
-            return date.toLocaleDateString();
+            const raw = row.getValue('due_date') as string;
+            const parsed = new Date((raw ?? '').toString().replace(' ', 'T'));
+            if (isNaN(parsed.getTime())) return '';
+            return parsed.toLocaleString();
         },
     },
 

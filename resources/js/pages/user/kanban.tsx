@@ -32,6 +32,7 @@ import CreateTaskSheet from "@/components/user/tasks/create-task-modal";
 import { BoardColumn, Column } from "@/components/user/kanban/board-column";
 import { Task, TaskCard } from "@/components/user/kanban/task-card";
 import { BreadcrumbItem } from "@/types";
+import { Button } from "@/components/ui/button";
 
 // --- Initial Data ---
 
@@ -52,13 +53,23 @@ const breadcrumbs: BreadcrumbItem[] = [
 // --- Components ---
 
 interface KanbanBoardProps {
-  tasks: Task[];
+  initialTasks: Record<string, {
+    data: Task[];
+    current_page: number;
+    last_page: number;
+  }>;
   patients: { id: number; name: string }[];
 }
 
-export default function KanbanBoard({ tasks: initialBackendTasks, patients }: KanbanBoardProps) {
+export default function KanbanBoard({ initialTasks, patients }: KanbanBoardProps) {
   const [columns, setColumns] = useState<Column[]>(initialColumns);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [pagination, setPagination] = useState<Record<string, {
+    currentPage: number;
+    lastPage: number;
+    loading: boolean;
+  }>>({});
+  
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -85,23 +96,84 @@ export default function KanbanBoard({ tasks: initialBackendTasks, patients }: Ka
   };
 
   const onTaskCreated = () => {
-    router.reload({ only: ["tasks"] });
+    router.reload({ only: ["initialTasks"] });
   };
 
   useEffect(() => {
-    if (initialBackendTasks) {
-      const tasksWithUiData = initialBackendTasks.map((task) => ({
-        ...task,
-        tags: (task as any).tags || ["Task"],
-        comments: (task as any).comments || 0,
-        attachments: (task as any).attachments || 0,
-        assignees: (task as any).assignees || ["/avatars/01.png"],
-        patient: task.patient || null,
-      }));
-      setTasks(tasksWithUiData);
-      setTimeout(() => setLoading(false), 500); // simulate loading
+    if (initialTasks) {
+      const allTasks: Task[] = [];
+      const newPagination: Record<string, any> = {};
+
+      Object.entries(initialTasks).forEach(([status, paginated]) => {
+        const tasksWithUiData = paginated.data.map((task) => ({
+          ...task,
+          tags: (task as any).tags || ["Task"],
+          comments: (task as any).comments || 0,
+          attachments: (task as any).attachments || 0,
+          assignees: (task as any).assignees || ["/avatars/01.png"],
+          patient: task.patient || null,
+        }));
+        allTasks.push(...tasksWithUiData);
+        
+        newPagination[status] = {
+          currentPage: paginated.current_page,
+          lastPage: paginated.last_page,
+          loading: false,
+        };
+      });
+
+      setTasks(allTasks);
+      setPagination(newPagination);
+      setTimeout(() => setLoading(false), 500);
     }
-  }, [initialBackendTasks]);
+  }, [initialTasks]);
+
+  const loadMoreTasks = async (status: string) => {
+    const statusPagination = pagination[status];
+    if (!statusPagination || statusPagination.loading || statusPagination.currentPage >= statusPagination.lastPage) {
+      return;
+    }
+
+    setPagination(prev => ({
+      ...prev,
+      [status]: { ...prev[status], loading: true }
+    }));
+
+    try {
+      const response = await fetch(route('kanban', { 
+        status, 
+        page: statusPagination.currentPage + 1 
+      }));
+      const data = await response.json();
+
+      if (data.tasks) {
+        const newTasks = data.tasks.data.map((task: any) => ({
+          ...task,
+          tags: task.tags || ["Task"],
+          comments: task.comments || 0,
+          attachments: task.attachments || 0,
+          assignees: task.assignees || ["/avatars/01.png"],
+          patient: task.patient || null,
+        }));
+
+        setTasks(prev => [...prev, ...newTasks]);
+        setPagination(prev => ({
+          ...prev,
+          [status]: {
+            currentPage: data.tasks.current_page,
+            lastPage: data.tasks.last_page,
+            loading: false,
+          }
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to load more tasks:", error);
+      setPagination(prev => ({
+        ...prev,
+        [status]: { ...prev[status], loading: false }
+      }));
+    }
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -272,7 +344,7 @@ export default function KanbanBoard({ tasks: initialBackendTasks, patients }: Ka
       <div className="relative flex h-full min-h-screen w-full flex-col overflow-hidden">
         <div className="w-full px-6 mx-auto">
           <h2 className="text-2xl font-bold tracking-tight mt-4">
-            Kanban Pipeline de Tâches
+            Kanban des Tâches
           </h2>
         </div>
 
@@ -296,13 +368,25 @@ export default function KanbanBoard({ tasks: initialBackendTasks, patients }: Ka
               if (col.id === "done") onAddTask = createDoneTask;
 
               return (
-                <BoardColumn
-                  key={col.id}
-                  column={col}
-                  tasks={filteredTasks.filter((task) => task.status === col.id)}
-                  loading={loading}
-                  onAddTask={onAddTask}
-                />
+                <div key={col.id} className="h-full flex flex-col">
+                  <BoardColumn
+                    column={col}
+                    tasks={filteredTasks.filter((task) => task.status === col.id)}
+                    loading={loading}
+                    onAddTask={onAddTask}
+                  />
+                  {pagination[col.id]?.currentPage < pagination[col.id]?.lastPage && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="mt-2 text-xs text-muted-foreground hover:text-foreground"
+                      onClick={() => loadMoreTasks(col.id as string)}
+                      disabled={pagination[col.id]?.loading}
+                    >
+                      {pagination[col.id]?.loading ? "Chargement..." : "Charger plus"}
+                    </Button>
+                  )}
+                </div>
               );
             })}
           </SortableContext>

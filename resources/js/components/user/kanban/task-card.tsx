@@ -66,13 +66,16 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
   const formatDate = (dateString: string) => {
     if (!dateString) return "";
     try {
-      const date = new Date(dateString);
+      const date = new Date(dateString.replace(" ", "T"));
+      if (isNaN(date.getTime())) return dateString;
       return new Intl.DateTimeFormat("fr-FR", {
-        day: "numeric",
+        day: "2-digit",
         month: "short",
         year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
       }).format(date);
-    } catch (e) {
+    } catch {
       return dateString;
     }
   };

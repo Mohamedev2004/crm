@@ -149,7 +149,7 @@ export default function CreateTaskSheet({
                 Date d'échéance
               </label>
               <Input
-                type="date"
+                type="datetime-local"
                 value={taskData.due_date}
                 onChange={(e) =>
                   setTaskData({ ...taskData, due_date: e.target.value })

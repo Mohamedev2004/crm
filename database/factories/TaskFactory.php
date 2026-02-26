@@ -14,9 +14,10 @@ class TaskFactory extends Factory
         return [
             'title' => $this->faker->sentence(4),
             'description' => $this->faker->paragraph(),
-            'due_date' => $this->faker->dateTimeBetween('-1 week', '+1 month'),
+            'due_date' => $this->faker->dateTimeBetween('-1 week', '+1 month')->format('Y-m-d H:i:s'),
             'priority' => $this->faker->randomElement(['low', 'medium', 'high']),
             'status' => $this->faker->randomElement($statuses),
+            'reminder_sent' => false, // make it always false for testing the command, or 30% chance to be true
 
             // 70% chance to attach to a patient
             'patient_id' => Patient::inRandomOrder()->value('id'),

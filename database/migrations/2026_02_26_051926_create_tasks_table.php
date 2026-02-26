@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('description');
 
-            $table->date('due_date');
+            $table->dateTime('due_date')->index();
+            $table->boolean('reminder_sent')->default(false)->index();
             $table->enum('priority', ['low', 'medium', 'high'])->default('medium');
             $table->enum('status', ['pending', 'in_progress', 'done', 'overdue'])->default('pending');
 

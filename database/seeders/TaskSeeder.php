@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Task;
+use Illuminate\Database\Seeder;
 
 class TaskSeeder extends Seeder
 {
     public function run(): void
     {
-        Task::factory()->count(50)->create();
+        Task::factory()->count(150)->create();
     }
 }

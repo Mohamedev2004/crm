@@ -68,6 +68,7 @@ class TaskController extends Controller
         Task::create([
             ...$validated,
             'status' => 'pending',
+            'reminder_sent' => false,
         ]);
 
         return back()->with('success', 'Tâche créée avec succès');

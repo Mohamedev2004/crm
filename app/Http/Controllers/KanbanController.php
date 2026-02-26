@@ -9,34 +9,64 @@ use Inertia\Inertia;
 
 class KanbanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // 1. Optimize Task query: Select only needed columns and limit per status
         $statuses = ['pending', 'in_progress', 'done', 'overdue'];
-        $tasks = collect();
 
-        foreach ($statuses as $status) {
-            $tasks = $tasks->concat(
-                Task::where('status', $status)
-                    ->latest()
-                    ->with(['patient'])
-                    ->select(['id', 'title', 'description', 'priority', 'due_date', 'status', 'patient_id'])
-                    ->take(10)
-                    ->get()
-            );
+        // If it's an Inertia partial request for a specific column (infinite scroll)
+        if ($request->has('status') && in_array($request->status, $statuses)) {
+            $status = $request->status;
+            $perPage = 20;
+            $page = $request->input('page', 1);
+
+            $tasks = Task::with('patient')
+                ->where('status', $status)
+                ->orderByDesc('due_date')
+                ->paginate($perPage, ['*'], 'page', $page)
+                ->through(fn ($task) => [
+                    'id' => $task->id,
+                    'title' => $task->title,
+                    'description' => $task->description,
+                    'priority' => $task->priority,
+                    'due_date' => $task->due_date?->toIso8601String(),
+                    'status' => $task->status,
+                    'patient_id' => $task->patient_id,
+                    'patient' => $task->patient ? [
+                        'id' => $task->patient->id,
+                        'name' => trim($task->patient->first_name.' '.$task->patient->last_name),
+                    ] : null,
+                ]);
+
+            return response()->json([
+                'status' => $status,
+                'tasks' => $tasks,
+            ]);
         }
 
-        $tasks = $tasks->map(function ($task) {
-            if ($task->patient) {
-                $task->patient->name = trim($task->patient->first_name.' '.$task->patient->last_name);
-            }
+        // Initial load: fetch first page for all columns
+        $initialTasks = [];
+        foreach ($statuses as $status) {
+            $initialTasks[$status] = Task::with('patient')
+                ->where('status', $status)
+                ->orderByDesc('due_date')
+                ->paginate(20, ['*'], 'page', 1)
+                ->through(fn ($task) => [
+                    'id' => $task->id,
+                    'title' => $task->title,
+                    'description' => $task->description,
+                    'priority' => $task->priority,
+                    'due_date' => $task->due_date?->toIso8601String(),
+                    'status' => $task->status,
+                    'patient_id' => $task->patient_id,
+                    'patient' => $task->patient ? [
+                        'id' => $task->patient->id,
+                        'name' => trim($task->patient->first_name.' '.$task->patient->last_name),
+                    ] : null,
+                ]);
+        }
 
-            return $task;
-        });
-
-        // 2. Use Defer for patients: Loaded only when needed (e.g. for the creation modal)
         return Inertia::render('user/kanban', [
-            'tasks' => $tasks,
+            'initialTasks' => $initialTasks,
             'patients' => Inertia::defer(fn () => Patient::select('id', 'first_name', 'last_name')->get()->map(fn ($p) => [
                 'id' => $p->id,
                 'name' => $p->first_name.' '.$p->last_name,
