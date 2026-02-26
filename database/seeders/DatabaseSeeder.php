@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             NotificationSeeder::class,
             NewsletterSeeder::class,
+            PatientSeeder::class,
+            ReportSeeder::class,
         ]);
     }
 }

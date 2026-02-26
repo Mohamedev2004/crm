@@ -197,10 +197,17 @@ class PatientController extends Controller
      */
     public function destroy($id)
     {
-        $patient = Patient::findOrFail($id);
+        $patient = Patient::with('reports')->findOrFail($id);
+
+        // Soft-delete all related reports
+        foreach ($patient->reports as $report) {
+            $report->delete();
+        }
+
+        // Soft-delete the patient
         $patient->delete();
 
-        return back()->with('success', 'Patient supprimé avec succès.');
+        return back()->with('success', 'Patient et ses rapports supprimés avec succès.');
     }
 
     /**
@@ -213,9 +220,20 @@ class PatientController extends Controller
             'ids.*' => 'exists:patients,id',
         ]);
 
-        Patient::whereIn('id', $request->ids)->delete();
+        // Get patients including reports
+        $patients = Patient::with('reports')->whereIn('id', $request->ids)->get();
 
-        return back()->with('success', 'Patients supprimés avec succès.');
+        foreach ($patients as $patient) {
+            // Delete all related reports
+            foreach ($patient->reports as $report) {
+                $report->delete();
+            }
+
+            // Delete the patient
+            $patient->delete();
+        }
+
+        return back()->with('success', 'Patients et leurs rapports supprimés avec succès.');
     }
 
     /**
@@ -226,8 +244,13 @@ class PatientController extends Controller
         $patient = Patient::withTrashed()->findOrFail($id);
 
         if ($patient->trashed()) {
+            // Restore patient
             $patient->restore();
-            return back()->with('success', 'Patient restauré avec succès.');
+
+            // Restore all soft-deleted reports
+            $patient->reports()->onlyTrashed()->restore();
+
+            return back()->with('success', 'Patient et ses rapports restaurés avec succès.');
         }
 
         return back()->with('error', 'Ce patient n\'est pas supprimé.');
@@ -238,8 +261,13 @@ class PatientController extends Controller
      */
     public function restoreAll()
     {
-        Patient::onlyTrashed()->restore();
+        $patients = Patient::onlyTrashed()->get();
 
-        return back()->with('success', 'Tous les patients supprimés ont été restaurés.');
+        foreach ($patients as $patient) {
+            $patient->restore();
+            $patient->reports()->onlyTrashed()->restore();
+        }
+
+        return back()->with('success', 'Tous les patients et leurs rapports supprimés ont été restaurés avec succès.');
     }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -48,6 +49,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::put('/{id}', [PatientController::class, 'updateBasicInfos'])->name('updateBasicInfos');
             Route::put('/{patient}/medical', [PatientController::class, 'updateMedicalInfos'])->name('updateMedicalInfos');
             Route::delete('/{id}', [PatientController::class, 'destroy'])->name('destroy');
+            // REPORTS
+            Route::post('/{patient}/reports', [ReportController::class, 'store'])->name('report.store');
 
             // Restore & Bulk actions
             Route::post('/{id}/restore', [PatientController::class, 'restore'])->name('restore');

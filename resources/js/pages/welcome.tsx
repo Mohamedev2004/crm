@@ -35,7 +35,7 @@ export default function Welcome() {
 
   return (
     <AuthLayout
-      title={user ? `Welcome back, ${user.name}!` : "Welcome to your CRM"}
+      title={user ? `Welcome back, ${user.name}!` : "Welcome to your App"}
       description={
         user
           ? "Everything you do daily, organized in one living dashboard."

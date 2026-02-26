@@ -315,12 +315,15 @@ export const createPatientColumns = ({
 
             {!isDeleted && (
               <>
-              <DropdownMenuItem
-                onClick={() => router.get(route("patients.show", patient.id))}
-              >
-                <Eye className="mr-2 h-4 w-4" />
-                Voir
-              </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => router.get(route("patients.show", patient.id))}
+                >
+                  <Eye className="mr-2 h-4 w-4" />
+                  Voir Détails
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+
                 <DropdownMenuItem onClick={() => onEdit(patient)}>
                   <SquarePen className="mr-2 h-4 w-4" />
                   Modifier les infos de base
@@ -330,6 +333,8 @@ export const createPatientColumns = ({
                   <SquarePen className="mr-2 h-4 w-4" />
                   Modifier les infos médicales
                 </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
 
                 <DropdownMenuItem
                   variant="destructive"
