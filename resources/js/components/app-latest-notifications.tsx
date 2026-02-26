@@ -95,7 +95,7 @@ export function AppLatestNotifications() {
         {/* Header */}
         <div className="flex items-center justify-between border-b px-4 py-3">
           <span className="text-sm font-semibold">Notifications</span>
-          <Link href="/notifications">
+          <Link href={route('notifications.index')}>
             <Button variant="link" size="xs" className="text-xs cursor-pointer">
               Voir tout
             </Button>

@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
 
 interface Patient {
   id: number;
@@ -45,7 +46,14 @@ export default function PatientReportCreate({ patient }: Props) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    form.post(route("patients.report.store", { patient: patient.id }));
+    form.post(route("patients.report.store", { patient: patient.id }), {
+      onSuccess: () => {
+        toast.success("Rapport médical créé avec succès");
+      },
+      onError: () => {
+        toast.error("Erreur lors de la création du rapport");
+      },
+    });
   };
 
   return (
@@ -144,7 +152,6 @@ export default function PatientReportCreate({ patient }: Props) {
             <Button
               type="submit"
               disabled={form.processing}
-              className="px-8 font-bold shadow-lg shadow-primary/20"
             >
               {form.processing ? "Enregistrement..." : "Enregistrer le rapport"}
             </Button>

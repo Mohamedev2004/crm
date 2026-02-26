@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 import type { Patient } from "@/types/patient";
 
@@ -63,9 +64,13 @@ export const UpdatePatientBasicModal = ({
 
     put(route("patients.updateBasicInfos", selectedPatient.id), {
       onSuccess: () => {
+        toast.success("Informations de base mises à jour avec succès");
         onOpenChange(false);
         reset();
         onSuccess?.();
+      },
+      onError: () => {
+        toast.error("Erreur lors de la mise à jour des informations");
       },
       preserveScroll: true,
     });

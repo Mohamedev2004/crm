@@ -32,7 +32,7 @@ export function NavMain({ items = [] }: { items: NavGroup[] }) {
                                     <Link href={item.href} prefetch>
                                         {item.icon && <item.icon />}
                                         <span>{item.title}</span>
-                                        {item.badge && <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>}
+                                        {item.badge ? <SidebarMenuBadge>{item.badge}</SidebarMenuBadge> : null}
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>

@@ -1,3 +1,5 @@
+/* eslint-disable import/order */
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 import { DataTableColumnHeader } from '@/components/data-table-column-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -172,12 +174,12 @@ export const createTaskColumns = (
 
             const statusMap: Record<
                 Task['status'],
-                'success' | 'pending' | 'destructive' | 'in_progress'
+                'success' | 'pending' | 'danger' | 'in_progress'
             > = {
                 done: 'success',
                 pending: 'pending',
                 in_progress: 'in_progress',
-                overdue: 'destructive',
+                overdue: 'danger',
             };
 
             const labelMap: Record<Task['status'], string> = {
@@ -236,10 +238,11 @@ export const createTaskColumns = (
         cell: ({ row }) => {
             const task = row.original;
             const isDone = task.status === 'done';
+            const isOverdue = task.status === 'overdue';
 
             return (
                 <>
-                    {!isDone && (
+                    {!isDone && !isOverdue && (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button

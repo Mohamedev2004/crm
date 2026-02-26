@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable import/order */
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable react-hooks/incompatible-library */
 "use client";
 
@@ -87,7 +90,7 @@ export function TasksDataTable<TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getRowId: (row: any) => `${row.id}`,
-    enableRowSelection: (row: any) => row.original.status !== 'done',
+    enableRowSelection: (row: any) => !['done', 'overdue'].includes(row.original.status),
     state: { rowSelection, sorting },
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,

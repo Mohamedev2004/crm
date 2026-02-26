@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 import type { Patient } from "@/types/patient";
 
@@ -67,9 +68,13 @@ export const UpdatePatientMedicalModal = ({
 
     put(route("patients.updateMedicalInfos", selectedPatient.id), {
       onSuccess: () => {
+        toast.success("Informations médicales mises à jour avec succès");
         onOpenChange(false);
         reset();
         onSuccess?.();
+      },
+      onError: () => {
+        toast.error("Erreur lors de la mise à jour des informations médicales");
       },
       preserveScroll: true,
     });

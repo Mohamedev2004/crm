@@ -79,6 +79,10 @@ class TaskController extends Controller
             return back()->with('error', 'Impossible de modifier une tâche terminée !');
         }
 
+        if ($task->status === 'overdue') {
+            return back()->with('error', 'Impossible de modifier une tâche en retard !');
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -135,8 +139,8 @@ class TaskController extends Controller
         ]);
 
         Task::whereIn('id', $request->task_ids)
-            ->where('status', '!=', 'done')
-            ->update(['status' => $status]);
+        ->whereNotIn('status', ['done', 'overdue'])
+        ->update(['status' => $status]);
 
         return back()->with('success', 'Tâches sélectionnées mises à jour !');
     }

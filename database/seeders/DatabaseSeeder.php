@@ -3,9 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\User;
-use Database\Seeders\NotificationSeeder;
-use Database\Seeders\NewsletterSeeder;   
+use App\Models\User;  
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,6 +22,7 @@ class DatabaseSeeder extends Seeder
             NewsletterSeeder::class,
             PatientSeeder::class,
             ReportSeeder::class,
+            TaskSeeder::class,
         ]);
     }
 }
