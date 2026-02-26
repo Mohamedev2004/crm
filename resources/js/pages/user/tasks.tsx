@@ -119,7 +119,7 @@ export default function DailyTasks({ tasks: initialTasks, patients, filters }: T
     router.post(route("tasks.setSelectedDone"), { task_ids: ids.map(Number) }, {
       preserveScroll: true,
       onSuccess: () => {
-        toast.success("Les tâches sélectionnées sont marquées comme terminées");
+        toast.success("Les tâches sélectionnées sont marquées terminées");
         router.reload();
       },
       onError: () => toast.error("Échec de la mise à jour des tâches sélectionnées"),
