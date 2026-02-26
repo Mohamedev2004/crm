@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Patient;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 class PatientController extends Controller
 {
@@ -21,19 +21,19 @@ class PatientController extends Controller
             'cin',
             'group_blood',
             'phone',
-            'created_at'
+            'created_at',
         ];
 
-        $search  = $request->input('search');
+        $search = $request->input('search');
         $trashed = $request->input('trashed', 'all');
-        $sortBy  = in_array($request->input('sortBy'), $sortable)
+        $sortBy = in_array($request->input('sortBy'), $sortable)
                         ? $request->input('sortBy')
                         : 'created_at';
 
         $sortDir = $request->input('sortDir') === 'asc' ? 'asc' : 'desc';
 
-        $perPage = in_array((int)$request->input('perPage'), [5,10,20,30,50])
-                        ? (int)$request->input('perPage')
+        $perPage = in_array((int) $request->input('perPage'), [5, 10, 20, 30, 50])
+                        ? (int) $request->input('perPage')
                         : 10;
 
         $query = Patient::query();
@@ -52,12 +52,12 @@ class PatientController extends Controller
         }
 
         // Recherche
-        if (!empty($search)) {
+        if (! empty($search)) {
             $query->where(function ($q) use ($search) {
                 $q->where('first_name', 'like', "%{$search}%")
-                  ->orWhere('last_name', 'like', "%{$search}%")
-                  ->orWhere('cin', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%");
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('cin', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
             });
         }
 
@@ -70,9 +70,9 @@ class PatientController extends Controller
         return Inertia::render('user/patients', [
             'patients' => $patients,
             'filters' => [
-                'search'  => $search,
+                'search' => $search,
                 'trashed' => $trashed,
-                'sortBy'  => $sortBy,
+                'sortBy' => $sortBy,
                 'sortDir' => $sortDir,
                 'perPage' => $perPage,
             ],
@@ -85,13 +85,13 @@ class PatientController extends Controller
     public function storeBasicInfos(Request $request)
     {
         $validated = $request->validate([
-            'first_name'    => 'required|string|max:255',
-            'last_name'     => 'required|string|max:255',
-            'cin'           => 'nullable|string|max:50|unique:patients,cin',
-            'phone'         => 'required|string|max:20',
-            'email'         => 'nullable|email|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'cin' => 'nullable|string|max:50|unique:patients,cin',
+            'phone' => 'required|string|max:20',
+            'email' => 'nullable|email|max:255',
             'date_of_birth' => 'nullable|date',
-            'address'       => 'nullable|string',
+            'address' => 'nullable|string',
         ]);
 
         try {
@@ -104,10 +104,11 @@ class PatientController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error("Erreur création patient (basic infos): " . $e->getMessage());
+            Log::error('Erreur création patient (basic infos): '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'Erreur lors de la création du patient.'
+                'message' => 'Erreur lors de la création du patient.',
             ], 500);
         }
     }
@@ -120,11 +121,11 @@ class PatientController extends Controller
         $patient = Patient::findOrFail($id);
 
         $validated = $request->validate([
-            'blood_group'      => 'nullable|in:A+,A-,B+,B-,AB+,AB-,O+,O-',
-            'allergies'        => 'nullable|string',
+            'blood_group' => 'nullable|in:A+,A-,B+,B-,AB+,AB-,O+,O-',
+            'allergies' => 'nullable|string',
             'chronic_diseases' => 'nullable|string',
-            'is_pregnant'      => 'boolean',
-            'notes'            => 'nullable|string',
+            'is_pregnant' => 'boolean',
+            'notes' => 'nullable|string',
         ]);
 
         try {
@@ -136,10 +137,11 @@ class PatientController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error("Erreur création patient (medical infos): " . $e->getMessage());
+            Log::error('Erreur création patient (medical infos): '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'Erreur lors de la mise à jour des informations médicales.'
+                'message' => 'Erreur lors de la mise à jour des informations médicales.',
             ], 500);
         }
     }
@@ -152,13 +154,13 @@ class PatientController extends Controller
         $patient = Patient::findOrFail($id);
 
         $validated = $request->validate([
-            'first_name'    => 'required|string|max:255',
-            'last_name'     => 'required|string|max:255',
-            'cin'           => 'nullable|string|max:50|unique:patients,cin,' . $id,
-            'phone'         => 'required|string|max:20',
-            'email'         => 'nullable|email|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'cin' => 'nullable|string|max:50|unique:patients,cin,'.$id,
+            'phone' => 'required|string|max:20',
+            'email' => 'nullable|email|max:255',
             'date_of_birth' => 'nullable|date',
-            'address'       => 'nullable|string',
+            'address' => 'nullable|string',
         ]);
 
         $patient->update($validated);
@@ -171,11 +173,11 @@ class PatientController extends Controller
         $patient = Patient::findOrFail($id);
 
         $validated = $request->validate([
-            'blood_group'      => 'nullable|in:A+,A-,B+,B-,AB+,AB-,O+,O-',
-            'allergies'        => 'nullable|string',
+            'blood_group' => 'nullable|in:A+,A-,B+,B-,AB+,AB-,O+,O-',
+            'allergies' => 'nullable|string',
             'chronic_diseases' => 'nullable|string',
-            'is_pregnant'      => 'boolean',
-            'notes'            => 'nullable|string',
+            'is_pregnant' => 'boolean',
+            'notes' => 'nullable|string',
         ]);
 
         $patient->update($validated);
@@ -183,12 +185,74 @@ class PatientController extends Controller
         return back()->with('success', 'Infos médicales mises à jour avec succès.');
     }
 
-    public function show(Patient $patient)
+    public function show(Request $request, Patient $patient)
     {
-        $patient->load('reports');
+        $sortable = [
+            'id',
+            'gestational_age_weeks',
+            'created_at',
+        ];
+
+        $search = $request->input('search');
+        $sortBy = in_array($request->input('sortBy'), $sortable)
+                        ? $request->input('sortBy')
+                        : 'created_at';
+
+        $sortDir = $request->input('sortDir') === 'asc' ? 'asc' : 'desc';
+
+        $perPage = in_array((int) $request->input('perPage'), [5, 10, 20, 30])
+                        ? (int) $request->input('perPage')
+                        : 5;
+
+        $query = $patient->reports();
+
+        if (! empty($search)) {
+            if (is_numeric($search)) {
+                // Find the ID of the report that has this sequence number
+                // Sequence is determined by created_at ASC, then id ASC
+                $targetReportId = $patient->reports()
+                    ->orderBy('created_at', 'asc')
+                    ->orderBy('id', 'asc')
+                    ->offset((int) $search - 1)
+                    ->limit(1)
+                    ->value('id');
+
+                if ($targetReportId) {
+                    $query->where('id', $targetReportId);
+                } else {
+                    $query->whereRaw('1 = 0'); // Force no results if number doesn't exist
+                }
+            } else {
+                // If search is not numeric, fallback to ID search (though user requested number)
+                $query->where('id', 'like', "%{$search}%");
+            }
+        }
+
+        $query->orderBy($sortBy, $sortDir);
+
+        $reports = $query
+            ->paginate($perPage)
+            ->appends($request->query());
+
+        // Add sequence number to each report
+        $reports->getCollection()->transform(function ($report, $key) use ($patient) {
+            $report->number = $patient->reports()
+                ->where('created_at', '<=', $report->created_at)
+                ->where('id', '<=', $report->id)
+                ->count();
+
+            return $report;
+        });
 
         return inertia('user/patient-details', [
             'patient' => $patient,
+            'reports' => $reports,
+            'filters' => [
+                'search' => $search,
+                'sortBy' => $sortBy,
+                'sortDir' => $sortDir,
+                'perPage' => $perPage,
+            ],
         ]);
     }
 

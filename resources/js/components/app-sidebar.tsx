@@ -8,7 +8,7 @@ import {
     Users,
     CalendarCheck2,
     Bell,
-    Mail,
+    MailPlus,
 } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -58,7 +58,7 @@ export function getMainNavItems(unreadCount: number): NavGroup[] {
                 {
                     title: 'Newsletters',
                     href: '/admin/newsletters',
-                    icon: Mail,
+                    icon: MailPlus,
                 },
                 {
                     title: 'Tasks',

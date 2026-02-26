@@ -50,7 +50,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::put('/{patient}/medical', [PatientController::class, 'updateMedicalInfos'])->name('updateMedicalInfos');
             Route::delete('/{id}', [PatientController::class, 'destroy'])->name('destroy');
             // REPORTS
+            Route::get('/{patient}/reports/create', [ReportController::class, 'create'])->name('report.create');
             Route::post('/{patient}/reports', [ReportController::class, 'store'])->name('report.store');
+            Route::get('/{patient}/reports/{report}', [ReportController::class, 'show'])->name('reports.show');
+            Route::get('/{patient}/reports/{report}/download', [ReportController::class, 'downloadPdf'])->name('reports.download');
 
             // Restore & Bulk actions
             Route::post('/{id}/restore', [PatientController::class, 'restore'])->name('restore');
