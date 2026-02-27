@@ -27,6 +27,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 /* ============================= */
 /* Types */
@@ -84,6 +86,8 @@ export function TasksDataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [searchInput, setSearchInput] = useState(filters.search ?? "");
+  
 
   const table = useReactTable({
     data,
@@ -131,6 +135,12 @@ export function TasksDataTable<TData, TValue>({
 
           {/* Status Filter */}
           <div className="flex items-center gap-2">
+            <Input
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Rechercher..."
+                className="w-[240px]"
+              />
             <Label>Statut</Label>
             <Select
               value={filters.status ?? "all"}

@@ -14,7 +14,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, CircleX, Clock, MoreHorizontal } from "lucide-react";
+import { CheckCircle2, CircleX, Clock, MoreHorizontal, SquarePen } from "lucide-react";
 
 export interface Appointment {
   id: number;
@@ -186,6 +186,7 @@ export function createAppointmentColumns(opts: {
               <DropdownMenuSeparator />
               {onEdit && (
                 <DropdownMenuItem onClick={() => onEdit(a)}>
+                  <SquarePen className="mr-2 h-4 w-4" />
                   Modifier
                 </DropdownMenuItem>
               )}
@@ -196,7 +197,7 @@ export function createAppointmentColumns(opts: {
               <DropdownMenuItem onClick={() => onComplete(a)}>
                 <Clock className="mr-2 h-4 w-4" /> Marquer terminé
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onCancel(a)}>
+              <DropdownMenuItem onClick={() => onCancel(a)} variant="destructive">
                 <CircleX className="mr-2 h-4 w-4" /> Annuler
               </DropdownMenuItem>
             </DropdownMenuContent>
