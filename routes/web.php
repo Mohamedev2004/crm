@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\KanbanController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\NotificationController;
@@ -75,10 +76,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/selected/pending', [TaskController::class, 'setSelectedPending'])->name('setSelectedPending');
         });
 
+        // APPOINTMENTS
+        Route::prefix('appointments')->name('appointments.')->group(function () {
+            Route::get('/', [AppointmentController::class, 'index'])->name('index');
+            Route::post('/', [AppointmentController::class, 'store'])->name('store');
+            Route::put('/{appointment}', [AppointmentController::class, 'update'])->name('update');
+            Route::post('/confirm-many', [AppointmentController::class, 'confirmMany'])->name('confirmMany');
+            Route::post('/cancel-many', [AppointmentController::class, 'cancelMany'])->name('cancelMany');
+            Route::post('/complete-many', [AppointmentController::class, 'completeMany'])->name('completeMany');
+            Route::post('/{id}/confirm', [AppointmentController::class, 'setConfirmed'])->name('setConfirmed');
+            Route::post('/{id}/cancel', [AppointmentController::class, 'setCancelled'])->name('setCancelled');
+            Route::post('/{id}/complete', [AppointmentController::class, 'setCompleted'])->name('setCompleted');
+        });
+
         // KANBAN
-        Route::get('/kanban', [KanbanController::class, 'index'])->name('kanban');
-        Route::post('/kanban', [KanbanController::class, 'store'])->name('kanban.store');
-        Route::patch('/kanban/{task}/status', [KanbanController::class, 'updateStatus'])->name('kanban.updateStatus');
+        Route::prefix('kanban')->name('kanban.')->group(function () {
+            Route::get('/', [KanbanController::class, 'index'])->name('index');
+            Route::post('/', [KanbanController::class, 'store'])->name('store');
+            Route::patch('/{task}/status', [KanbanController::class, 'updateStatus'])->name('updateStatus');
+        });
 
         // NOTIFICATIONS
         Route::prefix('notifications')->name('notifications.')->group(function () {

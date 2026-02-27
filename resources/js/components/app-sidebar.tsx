@@ -9,6 +9,7 @@ import {
     CalendarCheck2,
     Bell,
     MailPlus,
+    FolderClock,
 } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -61,7 +62,7 @@ export function getMainNavItems(unreadCount: number): NavGroup[] {
                     icon: MailPlus,
                 },
                 {
-                    title: 'Tasks',
+                    title: 'Tâches',
                     href: '/admin/tasks',
                     icon: ListChecks,
                 },
@@ -71,7 +72,12 @@ export function getMainNavItems(unreadCount: number): NavGroup[] {
                     icon: SquareKanban,
                 },
                 {
-                    title: 'Calendar',
+                    title: 'Rendez-vous',
+                    href: '/admin/appointments',
+                    icon: FolderClock,
+                },
+                {
+                    title: 'Calendrier',
                     href: '/admin/calendar',
                     icon: CalendarCheck2,
                 },
