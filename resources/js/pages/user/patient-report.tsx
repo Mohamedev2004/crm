@@ -44,7 +44,7 @@ export default function PatientReport({
         { title: "Patients", href: "#" },
         {
           title: `${patient.first_name} ${patient.last_name}`,
-          href: "#",
+          href: route("patients.show", { patient: patient.id }),
         },
         { title: `Rapport - ${reportNumber}`, href: "#" },
       ]}
