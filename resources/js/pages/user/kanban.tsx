@@ -140,10 +140,9 @@ export default function KanbanBoard({ initialTasks, patients }: KanbanBoardProps
     }));
 
     try {
-      const response = await fetch(route('kanban', { 
-        status, 
-        page: statusPagination.currentPage + 1 
-      }));
+      const response = await fetch(
+        route('kanban.index', { status, page: statusPagination.currentPage + 1 })
+      );
       const data = await response.json();
 
       if (data.tasks) {

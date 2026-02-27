@@ -7,6 +7,8 @@ use App\Models\Newsletter;
 use App\Models\Notification;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
+use App\Exports\NewslettersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class NewsletterController extends Controller
 {
@@ -189,5 +191,10 @@ class NewsletterController extends Controller
         Newsletter::onlyTrashed()->restore();
 
         return back()->with('success', 'Toutes les newsletters ont été restaurées avec succès.');
+    }
+
+    public function export()
+    {
+        return Excel::download(new NewslettersExport, 'newsletters.xlsx');
     }
 }

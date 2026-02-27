@@ -39,6 +39,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/{id}/restore', [NewsletterController::class, 'restore'])->name('restore');
             Route::post('/restore-all', [NewsletterController::class, 'restoreAll'])->name('restore-all');
             Route::post('/bulk-delete', [NewsletterController::class, 'bulkDelete'])->name('bulk-delete');
+
+            // Export
+            Route::get('/export', [NewsletterController::class, 'export'])->name('export');
         });
 
         // PATIENTS

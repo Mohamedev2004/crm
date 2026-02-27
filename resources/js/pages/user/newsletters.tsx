@@ -98,6 +98,12 @@ export default function NewsletterIndex({ newsletters, filters, flash }: Props) 
     });
   };
 
+  // Export
+  const handleExport = () => {
+    window.location.href = route("newsletters.export");
+    toast.success("Export en cours... Vérifiez vos téléchargements !");
+  };
+
   const hasSoftDeleted = pageData.some((n) => n.deleted_at !== null);
   const hasNewsletters = pageData.length > 0;
 
@@ -138,6 +144,7 @@ export default function NewsletterIndex({ newsletters, filters, flash }: Props) 
           onPerPageChange={(perPage) => navigateWith({ perPage, page: 1 })}
           onPageChange={(page) => navigateWith({ page })}
           onAddClick={() => setIsCreateOpen(true)}
+           onExportClick={handleExport}
         />
 
         {/* Create modal */}

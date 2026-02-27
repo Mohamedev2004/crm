@@ -9,7 +9,7 @@ import { DataTablePagination } from "@/components/data-table-pagination";
 import { DataTableViewOptions } from "@/components/data-table-view-options";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Undo2, Trash2, Plus, FolderCode } from "lucide-react";
+import { Undo2, Trash2, Plus, FolderCode, Download } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import {
@@ -35,6 +35,7 @@ interface NewsletterDataTableProps<TData> {
   onPerPageChange: (perPage: number) => void;
   onPageChange: (page: number) => void;
   onAddClick?: () => void;
+  onExportClick?: () => void;
 }
 
 export function NewsletterDataTable<TData>({
@@ -51,6 +52,7 @@ export function NewsletterDataTable<TData>({
   onPerPageChange,
   onPageChange,
   onAddClick,
+  onExportClick,
 }: NewsletterDataTableProps<TData>) {
   const table = useReactTable({
     data,
@@ -141,8 +143,14 @@ export function NewsletterDataTable<TData>({
                   <Plus className="mr-2 h-4 w-4" /> Ajouter un Abonné
                 </Button>
               )}
+              {onExportClick && (
+                <Button variant="secondary" size="sm" onClick={onExportClick}>
+                  <Download className="mr-2 h-4 w-4" /> Exporter
+                </Button>
+              )}
               <DataTableViewOptions table={table} />
             </div>
+
           </div>
           {/* Tableau */}
           <div className="rounded-md border overflow-hidden">

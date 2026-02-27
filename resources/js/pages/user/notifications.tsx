@@ -6,7 +6,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Head, router } from "@inertiajs/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { BellRing, Check, ChevronDown, Filter, Search } from "lucide-react";
+import { BellRing, Check, ChevronDown, ChevronLeft, ChevronRight, Filter, Search } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
 
@@ -361,7 +361,7 @@ export default function Notifications({ notifications, filters }: NotificationsP
                     disabled={notifications.current_page <= 1}
                     onClick={() => handlePageChange(notifications.current_page - 1)}
                   >
-                    Précédent
+                    <ChevronLeft />
                   </Button>
 
                   <Button
@@ -370,7 +370,7 @@ export default function Notifications({ notifications, filters }: NotificationsP
                     disabled={notifications.current_page >= notifications.last_page}
                     onClick={() => handlePageChange(notifications.current_page + 1)}
                   >
-                    Suivant
+                    <ChevronRight />
                   </Button>
                 </div>
               </div>
