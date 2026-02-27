@@ -1,20 +1,14 @@
 /* eslint-disable react-hooks/incompatible-library */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable import/order */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import * as React from "react";
-import {
-  ColumnDef,
-  useReactTable,
-  getCoreRowModel,
-  flexRender,
-} from "@tanstack/react-table";
+import { ColumnDef, useReactTable, getCoreRowModel, flexRender } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DataTablePagination } from "@/components/data-table-pagination";
-import { DataTableViewOptions } from "@/components/data-table-view-options";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,12 +18,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Plus } from "lucide-react";
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { CalendarDays } from "lucide-react";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type Filters = {
   search?: string;
   trashed?: "all" | "actifs" | "deleted";
+  status?: string;
   sortBy?: string;
   sortDir?: "asc" | "desc";
   perPage?: number;
@@ -55,6 +51,13 @@ type Props<TData, TValue> = {
   onConfirmMany?: (ids: number[]) => void;
   onCancelMany?: (ids: number[]) => void;
   onCompleteMany?: (ids: number[]) => void;
+};
+
+const STATUS_LABELS: Record<string, string> = {
+  pending: "En attente",
+  confirmed: "Confirmé",
+  completed: "Terminé",
+  cancelled: "Annulé",
 };
 
 export function AppointmentsDataTable<TData, TValue>({
@@ -83,11 +86,13 @@ export function AppointmentsDataTable<TData, TValue>({
   });
 
   const [searchInput, setSearchInput] = useState(filters.search ?? "");
+
+  // Debounce search input
   useEffect(() => {
     if (searchInput === (filters.search ?? "")) return;
     const handler = setTimeout(() => onFilterChange("search", searchInput), 500);
     return () => clearTimeout(handler);
-  }, [filters.search, onFilterChange, searchInput]);
+  }, [searchInput, filters.search, onFilterChange]);
 
   const hasData = data.length > 0;
   const selectedIds = Object.keys(rowSelection);
@@ -121,23 +126,37 @@ export function AppointmentsDataTable<TData, TValue>({
         <div className="rounded-lg mt-4">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between mb-4">
             <div className="flex flex-col gap-2 md:flex-row md:items-center">
-              <div className="flex flex-col">
-                <Input
-                  value={searchInput}
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  placeholder="Rechercher..."
-                  className="w-[240px]"
-                />
-              </div>
+              <Input
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Rechercher..."
+                className="w-[240px]"
+              />
+
+              {/* Status filter controlled by props */}
+              <Select
+                value={filters.status ?? "all"}
+                onValueChange={(v) => onFilterChange("status", v === "all" ? undefined : v)}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Tous les statuts" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tous les statuts</SelectItem>
+                  {Object.entries(STATUS_LABELS).map(([key, label]) => (
+                    <SelectItem key={key} value={key}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="flex items-center gap-2 flex-wrap">
               {selectedCount > 0 && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline">
-                      Actions groupées ({selectedCount})
-                    </Button>
+                    <Button variant="outline">Actions groupées ({selectedCount})</Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     {onConfirmMany && (
@@ -163,7 +182,6 @@ export function AppointmentsDataTable<TData, TValue>({
                   <Plus className="mr-2 h-4 w-4" /> Ajouter un rendez-vous
                 </Button>
               )}
-              <DataTableViewOptions table={table} />
             </div>
           </div>
 

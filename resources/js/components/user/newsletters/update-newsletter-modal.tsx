@@ -66,7 +66,7 @@ export const UpdateNewsletterModal = ({ open, onOpenChange, selectedSubscriber, 
         </NativeDialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 gap-3 mx-4">
+          <div className="grid grid-cols-1 gap-3">
             <div className="flex flex-col">
               <Label className="mb-2">Email</Label>
               <Input

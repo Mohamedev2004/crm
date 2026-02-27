@@ -28,6 +28,7 @@ type Pagination<T> = {
 type Filters = {
   search?: string;
   trashed?: "all" | "actifs" | "deleted";
+  status?: string; // new status filter
   sortBy?: string;
   sortDir?: "asc" | "desc";
   perPage?: number;
@@ -66,6 +67,7 @@ export default function AppointmentsIndex({ appointments, filters }: Props) {
     [filters, navigateWith]
   );
 
+  // Action handlers (confirm, complete, cancel)
   const handleConfirm = useCallback((a: Appointment) => {
     router.post(route("appointments.setConfirmed", a.id), {}, {
       preserveScroll: true,
@@ -90,6 +92,7 @@ export default function AppointmentsIndex({ appointments, filters }: Props) {
     });
   }, []);
 
+  // Bulk actions
   const handleConfirmMany = useCallback((ids: number[]) => {
     router.post(route("appointments.confirmMany"), { appointment_ids: ids }, {
       preserveScroll: true,
@@ -129,9 +132,9 @@ export default function AppointmentsIndex({ appointments, filters }: Props) {
   const columns = useMemo(
     () =>
       createAppointmentColumns({
-        onConfirm: (a) => handleConfirm(a),
-        onComplete: (a) => handleComplete(a),
-        onCancel: (a) => handleCancel(a),
+        onConfirm: handleConfirm,
+        onComplete: handleComplete,
+        onCancel: handleCancel,
         onEdit: (a) => {
           setSelected(a);
           setIsEditOpen(true);
@@ -190,4 +193,3 @@ export default function AppointmentsIndex({ appointments, filters }: Props) {
     </AppLayout>
   );
 }
-

@@ -24,6 +24,7 @@ class AppointmentController extends Controller
 
         $search = $request->input('search');
         $trashed = $request->input('trashed', 'all');
+        $status = $request->input('status'); // New status filter
         $sortBy = in_array($request->input('sortBy'), $sortable)
                     ? $request->input('sortBy')
                     : 'appointment_date';
@@ -53,10 +54,15 @@ class AppointmentController extends Controller
         if (! empty($search)) {
             $query->where(function ($q) use ($search) {
                 $q->where('full_name', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('note', 'like', "%{$search}%");
+                ->orWhere('phone', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('note', 'like', "%{$search}%");
             });
+        }
+
+        // Filter by status
+        if (! empty($status)) {
+            $query->where('status', $status);
         }
 
         $query->orderBy($sortBy, $sortDir);
@@ -70,12 +76,14 @@ class AppointmentController extends Controller
             'filters' => [
                 'search' => $search,
                 'trashed' => $trashed,
+                'status' => $status, // Include status in filters
                 'sortBy' => $sortBy,
                 'sortDir' => $sortDir,
                 'perPage' => $perPage,
             ],
         ]);
     }
+
 
     public function store(Request $request)
     {
