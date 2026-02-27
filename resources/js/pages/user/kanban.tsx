@@ -357,7 +357,21 @@ export default function KanbanBoard({ initialTasks, patients }: KanbanBoardProps
       {/* Board */}
       <DndContext
         sensors={sensors}
-        collisionDetection={closestCorners}
+        collisionDetection={(args) => {
+          // Only detect columns when the pointer is inside them
+          const { active, droppableRects, pointerCoordinates } = args;
+
+          if (!pointerCoordinates) return [];
+
+          return Array.from(droppableRects.entries())
+            .filter(([id, entry]) => {
+              const { x, y } = pointerCoordinates;
+              return x >= entry.left && x <= entry.right && y >= entry.top && y <= entry.bottom;
+            })
+            .map(([id]) => ({
+              id,
+            }));
+        }}
         onDragStart={onDragStart}
         onDragOver={onDragOver}
         onDragEnd={onDragEnd}
