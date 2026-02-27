@@ -62,7 +62,7 @@ export function CreateAppointmentModal({ open, onOpenChange, onSuccess }: Props)
           <NativeDialogDescription>Créez un nouveau rendez-vous.</NativeDialogDescription>
         </NativeDialogHeader>
 
-        <form onSubmit={submit} className="space-y-4 mt-6">
+        <form onSubmit={submit} className="space-y-2 mt-6">
           <div>
             <Label>Nom complet</Label>
             <Input value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} required />

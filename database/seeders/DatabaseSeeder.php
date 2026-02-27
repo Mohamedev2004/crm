@@ -16,13 +16,13 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
-        // Then seed notifications and newsletters
         $this->call([
             NotificationSeeder::class,
             NewsletterSeeder::class,
             PatientSeeder::class,
             ReportSeeder::class,
             TaskSeeder::class,
+            AppointmentSeeder::class,
         ]);
     }
 }

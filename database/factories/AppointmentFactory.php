@@ -3,21 +3,21 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Carbon;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Appointment>
- */
 class AppointmentFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
+        $statuses = ['pending', 'confirmed', 'completed', 'cancelled'];
+
         return [
-            //
+            'full_name' => $this->faker->name(),
+            'phone' => $this->faker->phoneNumber(),
+            'email' => $this->faker->optional()->safeEmail(),
+            'appointment_date' => Carbon::now()->addDays(rand(1, 30)),
+            'status' => $this->faker->randomElement($statuses),
+            'note' => $this->faker->optional()->sentence(),
         ];
     }
 }

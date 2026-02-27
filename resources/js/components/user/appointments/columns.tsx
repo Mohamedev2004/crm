@@ -116,7 +116,7 @@ export function createAppointmentColumns(opts: {
           onSortChange={onSortChange}
         />
       ),
-      cell: ({ row }) => row.getValue("email") || <span className="text-muted-foreground italic">Aucun</span>,
+      cell: ({ row }) => row.getValue("email") || <span className="text-muted-foreground italic">-</span>,
     },
     {
       accessorKey: "appointment_date",

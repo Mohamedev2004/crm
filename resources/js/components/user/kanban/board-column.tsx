@@ -56,7 +56,7 @@ export function BoardColumn({ column, tasks, isOverlay, loading, onAddTask }: Bo
       ref={setNodeRef}
       style={style}
       className={cn(
-        "group/column relative flex h-full w-[350px] min-w-[350px] flex-col overflow-hidden rounded-2xl border border-border/40 bg-sidebar backdrop-blur-xl shadow-lg",
+        "group/column relative flex h-full w-[350px] min-w-[350px] flex-col overflow-hidden rounded-2xl border border-border/40 bg-sidebar backdrop-blur-xl shadow-lg m-auto",
         isDragging && "opacity-50",
         isOverlay && "rotate-2 scale-105 shadow-2xl cursor-grabbing bg-background/70"
       )}

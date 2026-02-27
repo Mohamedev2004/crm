@@ -25,7 +25,7 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import CreateTaskSheet from "@/components/user/tasks/create-task-modal";
@@ -178,7 +178,7 @@ export default function KanbanBoard({ initialTasks, patients }: KanbanBoardProps
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 3, // 3px movement required before drag starts
+        distance: 6, // slightly higher = less accidental drag
       },
     }),
     useSensor(KeyboardSensor, {
@@ -213,85 +213,80 @@ export default function KanbanBoard({ initialTasks, patients }: KanbanBoardProps
     const { active, over } = event;
     if (!over) return;
 
-    const activeId = active.id;
-    const overId = over.id;
-
-    if (activeId === overId) return;
+    if (active.id === over.id) return;
 
     const isActiveTask = active.data.current?.type === "Task";
     const isOverTask = over.data.current?.type === "Task";
-
-    // Handle Column dragging (optional but helps with visual feedback)
-    const isActiveColumn = active.data.current?.type === "Column";
-    if (isActiveColumn) {
-      setColumns((columns) => {
-        const activeIndex = columns.findIndex((col) => col.id === activeId);
-        const overIndex = columns.findIndex((col) => col.id === overId);
-        return arrayMove(columns, activeIndex, overIndex);
-      });
-      return;
-    }
+    const isOverColumn = over.data.current?.type === "Column";
 
     if (!isActiveTask) return;
 
-    // Im dropping a Task over another Task
-    if (isActiveTask && isOverTask) {
-      setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((t) => t.id === activeId);
-        const overIndex = tasks.findIndex((t) => t.id === overId);
+    setTasks((prevTasks) => {
+      const activeIndex = prevTasks.findIndex((t) => t.id === active.id);
+      if (activeIndex === -1) return prevTasks;
 
-        // Prevent moving to overdue column
-        if (tasks[overIndex].status === "overdue") {
-          return tasks;
+      const activeTask = prevTasks[activeIndex];
+
+      // Dropping over task
+      if (isOverTask) {
+        const overIndex = prevTasks.findIndex((t) => t.id === over.id);
+        if (overIndex === -1) return prevTasks;
+
+        const overTask = prevTasks[overIndex];
+
+        if (overTask.status === "overdue") return prevTasks;
+
+        const updatedTasks = [...prevTasks];
+
+        // Only update status if needed
+        if (activeTask.status !== overTask.status) {
+          updatedTasks[activeIndex] = {
+            ...activeTask,
+            status: overTask.status,
+          };
         }
 
-        const newTasks = [...tasks];
-        if (newTasks[activeIndex].status !== newTasks[overIndex].status) {
-          newTasks[activeIndex] = { ...newTasks[activeIndex], status: newTasks[overIndex].status };
-        }
-
-        return arrayMove(newTasks, activeIndex, overIndex);
-      });
-    }
-
-    const isOverColumn = over.data.current?.type === "Column";
-
-    // Im dropping a Task over a column
-    if (isActiveTask && isOverColumn) {
-      // Prevent moving to overdue column
-      if (overId === "overdue") {
-        return;
+        return arrayMove(updatedTasks, activeIndex, overIndex);
       }
 
-      setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((t) => t.id === activeId);
-        const newTasks = [...tasks];
-        newTasks[activeIndex] = { ...newTasks[activeIndex], status: overId as any };
+      // Dropping over column
+      if (isOverColumn) {
+        const columnId = over.id as "pending" | "in_progress" | "done" | "overdue";
+        if (columnId === "overdue") return prevTasks;
 
-        return arrayMove(newTasks, activeIndex, activeIndex);
-      });
-    }
+        if (activeTask.status === columnId) return prevTasks;
+
+        const updatedTasks = [...prevTasks];
+        updatedTasks[activeIndex] = {
+          ...activeTask,
+          status: columnId,
+        };
+
+        return updatedTasks;
+      }
+
+      return prevTasks;
+    });
   }
+
 
   function onDragEnd(event: DragEndEvent) {
     setActiveColumn(null);
     setActiveTask(null);
 
     const { active, over } = event;
+
     if (!over) {
       setOriginalStatus(null);
       return;
     }
 
-    const activeId = active.id;
-    const overId = over.id;
-
-    // Handle Column dragging end
     if (active.data.current?.type === "Column") {
-      setColumns((columns) => {
-        const activeIndex = columns.findIndex((col) => col.id === activeId);
-        const overIndex = columns.findIndex((col) => col.id === overId);
-        return arrayMove(columns, activeIndex, overIndex);
+      setColumns((cols) => {
+        const oldIndex = cols.findIndex((c) => c.id === active.id);
+        const newIndex = cols.findIndex((c) => c.id === over.id);
+        if (oldIndex === -1 || newIndex === -1) return cols;
+        return arrayMove(cols, oldIndex, newIndex);
       });
       return;
     }
@@ -302,45 +297,57 @@ export default function KanbanBoard({ initialTasks, patients }: KanbanBoardProps
       return;
     }
 
-    // The task in our state has already been updated by onDragOver
-    const task = tasks.find((t) => t.id === activeId);
+    const task = tasks.find((t) => t.id === active.id);
     if (!task) {
       setOriginalStatus(null);
       return;
     }
 
-    // If the status in state is different from the original status, update backend
     if (originalStatus && task.status !== originalStatus) {
-        router.patch(
-          route("kanban.updateStatus", { task: task.id }),
-          { status: task.status },
-          {
-            preserveScroll: true,
-            onSuccess: () => {
-              toast.success("Statut mis à jour avec succès");
-            },
-            onError: () => {
-              toast.error("Erreur lors de la mise à jour du statut");
-            },
-          }
-        );
-      }
+      const previousTasks = [...tasks];
+
+      router.patch(
+        route("kanban.updateStatus", { task: task.id }),
+        { status: task.status },
+        {
+          preserveScroll: true,
+          onSuccess: () => {
+            toast.success("Statut mis à jour avec succès");
+          },
+          onError: () => {
+            toast.error("Erreur lors de la mise à jour du statut");
+
+            // Full rollback
+            setTasks(
+              previousTasks.map((t) =>
+                t.id === task.id ? { ...t, status: originalStatus as "pending" | "in_progress" | "done" | "overdue" } : t
+              )
+            );
+          },
+        }
+      );
+    }
 
     setOriginalStatus(null);
   }
 
+
   const dropAnimation: DropAnimation = {
+    duration: 250,
+    easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
     sideEffects: defaultDropAnimationSideEffects({
       styles: {
         active: {
-          opacity: "0.5",
+          opacity: "0.4",
         },
       },
     }),
   };
 
+
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
+      <Head title="Kanban" />
       <div className="relative flex h-full min-h-screen w-full flex-col overflow-hidden">
         <div className="w-full px-6 mx-auto">
           <h2 className="text-2xl font-bold tracking-tight mt-4">
