@@ -144,9 +144,8 @@
 
 /* Base toast */
 .toaster [data-sonner-toast] {
-  position: relative;
-  overflow: hidden;
   backdrop-filter: blur(10px);
+  overflow: hidden;
   background: var(--popover);           /* dynamic bg */
   color: var(--popover-foreground);     /* dynamic text */
   border: 1px solid var(--border);
@@ -162,13 +161,13 @@
   transform: scaleX(0);
   transform-origin: left;
   animation: toast-fill 3s linear forwards;
-  z-index: 0;
+  z-index: -1;                            /* 👈 move behind content */
 }
 
 /* Keep content above animation */
 .toaster [data-sonner-toast] > * {
   position: relative;
-  z-index: 1;
+  z-index: 0;                              /* adjust to work with ::before -1 */
 }
 
 /* Smooth fill animation */
@@ -180,6 +179,3 @@
     transform: scaleX(1);
   }
 }
-
-
-
