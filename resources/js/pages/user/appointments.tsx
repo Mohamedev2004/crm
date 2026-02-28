@@ -13,7 +13,7 @@ import { UpdateAppointmentModal } from "@/components/user/appointments/update-ap
 import { toast } from "sonner";
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: "Crm Tools", href: "#" },
+  { title: "Outils Crm", href: "#" },
   { title: "Rendez-vous", href: "#" },
 ];
 

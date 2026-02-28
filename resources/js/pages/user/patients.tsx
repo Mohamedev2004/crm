@@ -16,7 +16,7 @@ import { UpdatePatientBasicModal } from "@/components/user/patients/update-patie
 import { UpdatePatientMedicalModal } from "@/components/user/patients/update-patient-medical-infos-modal";
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: "Crm Tools", href: "#" },
+  { title: "Outils Crm", href: "#" },
   { title: "Patients", href: "/patients" },
 ];
 

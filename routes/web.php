@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\KanbanController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\NotificationController;
@@ -77,6 +78,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/selected/done', [TaskController::class, 'setSelectedDone'])->name('setSelectedDone');
             Route::post('/selected/in-progress', [TaskController::class, 'setSelectedInProgress'])->name('setSelectedInProgress');
             Route::post('/selected/pending', [TaskController::class, 'setSelectedPending'])->name('setSelectedPending');
+        });
+
+        // CONTACTS
+        Route::prefix('contacts')->name('contacts.')->group(function () {
+            Route::get('/', [ContactController::class, 'index'])->name('index');
+            Route::post('/', [ContactController::class, 'store'])->name('store');
+            Route::put('/{contact}', [ContactController::class, 'update'])->name('update');
+            Route::delete('/{contact}', [ContactController::class, 'destroy'])->name('destroy');
         });
 
         // APPOINTMENTS

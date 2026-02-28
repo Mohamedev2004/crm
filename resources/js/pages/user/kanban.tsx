@@ -46,7 +46,7 @@ const initialColumns: Column[] = [
 // --- BreadCrumbs ---
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: "Crm Tools", href: '#' },
+  { title: "Outils Crm", href: '#' },
   { title: "Kanban", href: "#" },
 ];
 

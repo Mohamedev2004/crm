@@ -9,7 +9,7 @@ import { DataTablePagination } from "@/components/data-table-pagination";
 import { DataTableViewOptions } from "@/components/data-table-view-options";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Undo2, Trash2, Plus, Folder } from "lucide-react";
+import { Undo2, Trash2, Plus, Users } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import {
@@ -85,7 +85,7 @@ export function PatientDataTable<TData>({
           <Empty>
             <EmptyHeader>
               <EmptyMedia variant="icon" className="bg-foreground">
-                <Folder className="text-background" />
+                <Users className="text-background" />
               </EmptyMedia>
               <EmptyTitle>Aucun patient trouvé</EmptyTitle>
               <EmptyDescription>

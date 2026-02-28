@@ -56,7 +56,7 @@ interface TasksProps {
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: "Crm Tools", href: '#' },
+  { title: "Outils Crm", href: '#' },
   { title: "Tâches", href: "#" },
 ];
 

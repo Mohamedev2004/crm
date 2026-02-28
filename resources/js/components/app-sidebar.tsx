@@ -10,6 +10,7 @@ import {
     Bell,
     MailPlus,
     FolderClock,
+    FolderPen,
 } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -49,17 +50,27 @@ export function getMainNavItems(unreadCount: number): NavGroup[] {
             ],
         },
         {
-            label: 'Crm Tools',
+            label: 'Formulaires',
+            items: [
+                {
+                    title: 'Newsletters',
+                    href: '/admin/newsletters',
+                    icon: MailPlus,
+                },
+                {
+                    title: 'Contacts',
+                    href: '/admin/contacts',
+                    icon: FolderPen,
+                },
+            ],
+        },
+        {
+            label: 'Outils Crm',
             items: [
                 {
                     title: 'Patients',
                     href: '/admin/patients',
                     icon: Users,
-                },
-                {
-                    title: 'Newsletters',
-                    href: '/admin/newsletters',
-                    icon: MailPlus,
                 },
                 {
                     title: 'Tâches',

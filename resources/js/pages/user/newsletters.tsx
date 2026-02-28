@@ -13,7 +13,7 @@ import { CreateNewsletterModal } from "@/components/user/newsletters/create-news
 import { UpdateNewsletterModal } from "@/components/user/newsletters/update-newsletter-modal";
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: "Application", href: "#" },
+  { title: "Formulaires", href: "#" },
   { title: "Newsletters", href: "/newsletters" },
 ];
 

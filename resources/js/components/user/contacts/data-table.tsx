@@ -11,15 +11,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { DataTablePagination } from "@/components/data-table-pagination";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { FolderClock, Plus } from "lucide-react";
+import { FolderPen, Plus } from "lucide-react";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type Filters = {
   search?: string;
@@ -47,19 +40,9 @@ type Props<TData, TValue> = {
   onPerPageChange: (perPage: number) => void;
   onPageChange: (page: number) => void;
   onAddClick?: () => void;
-  onConfirmMany?: (ids: number[]) => void;
-  onCancelMany?: (ids: number[]) => void;
-  onCompleteMany?: (ids: number[]) => void;
 };
 
-const STATUS_LABELS: Record<string, string> = {
-  pending: "En attente",
-  confirmed: "Confirmé",
-  completed: "Terminé",
-  cancelled: "Annulé",
-};
-
-export function AppointmentsDataTable<TData, TValue>({
+export function ContactsDataTable<TData, TValue>({
   columns,
   data = [],
   rowSelection,
@@ -70,9 +53,6 @@ export function AppointmentsDataTable<TData, TValue>({
   onPerPageChange,
   onPageChange,
   onAddClick,
-  onConfirmMany,
-  onCancelMany,
-  onCompleteMany,
 }: Props<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -93,10 +73,10 @@ export function AppointmentsDataTable<TData, TValue>({
     return () => clearTimeout(handler);
   }, [searchInput, filters.search, onFilterChange]);
 
-  const hasData = data.length > 0;
-  const selectedIds = Object.keys(rowSelection);
+   const hasData = data.length > 0;
+  /* const selectedIds = Object.keys(rowSelection);
   const selectedCount = selectedIds.length;
-  const selectedIdsAsNumbers = selectedIds.map((id) => Number(id)).filter((n) => !Number.isNaN(n));
+  const selectedIdsAsNumbers = selectedIds.map((id) => Number(id)).filter((n) => !Number.isNaN(n)); */
 
   return (
     <div className="w-full">
@@ -105,17 +85,17 @@ export function AppointmentsDataTable<TData, TValue>({
           <Empty>
             <EmptyHeader>
               <EmptyMedia variant="icon" className="bg-foreground">
-                <FolderClock className="text-background" />
+                <FolderPen className="text-background" />
               </EmptyMedia>
-              <EmptyTitle>Aucun rendez-vous</EmptyTitle>
+              <EmptyTitle>Aucun contact</EmptyTitle>
               <EmptyDescription>
-                Aucun rendez-vous ne correspond à vos filtres. Ajoutez-en un pour commencer.
+                Aucun contact ne correspond à vos filtres. Ajoutez-en un pour commencer.
               </EmptyDescription>
             </EmptyHeader>
             <EmptyContent className="flex-row justify-center gap-2">
               {onAddClick && (
                 <Button onClick={onAddClick}>
-                  <Plus className="mr-2 h-4 w-4" /> Ajouter un rendez-vous
+                  <Plus className="mr-2 h-4 w-4" /> Ajouter un contact
                 </Button>
               )}
             </EmptyContent>
@@ -131,54 +111,12 @@ export function AppointmentsDataTable<TData, TValue>({
                 placeholder="Rechercher..."
                 className="w-[240px]"
               />
-
-              {/* Status filter controlled by props */}
-              <Select
-                value={filters.status ?? "all"}
-                onValueChange={(v) => onFilterChange("status", v === "all" ? undefined : v)}
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Tous les statuts" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tous les statuts</SelectItem>
-                  {Object.entries(STATUS_LABELS).map(([key, label]) => (
-                    <SelectItem key={key} value={key}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
 
             <div className="flex items-center gap-2 flex-wrap">
-              {selectedCount > 0 && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline">Actions groupées ({selectedCount})</Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    {onConfirmMany && (
-                      <DropdownMenuItem onClick={() => onConfirmMany(selectedIdsAsNumbers)}>
-                        Confirmer sélection
-                      </DropdownMenuItem>
-                    )}
-                    {onCompleteMany && (
-                      <DropdownMenuItem onClick={() => onCompleteMany(selectedIdsAsNumbers)}>
-                        Marquer terminé
-                      </DropdownMenuItem>
-                    )}
-                    {onCancelMany && (
-                      <DropdownMenuItem onClick={() => onCancelMany(selectedIdsAsNumbers)}>
-                        Annuler sélection
-                      </DropdownMenuItem>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
               {onAddClick && (
                 <Button onClick={onAddClick}>
-                  <Plus className="mr-2 h-4 w-4" /> Ajouter un rendez-vous
+                  <Plus className="mr-2 h-4 w-4" /> Ajouter un contact
                 </Button>
               )}
             </div>
