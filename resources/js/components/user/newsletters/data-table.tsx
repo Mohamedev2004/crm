@@ -144,7 +144,7 @@ export function NewsletterDataTable<TData>({
                 </Button>
               )}
               {onExportClick && (
-                <Button variant="secondary" size="sm" onClick={onExportClick}>
+                <Button variant="outline" size="sm" onClick={onExportClick}>
                   <Download className="mr-2 h-4 w-4" /> Exporter
                 </Button>
               )}

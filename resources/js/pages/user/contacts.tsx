@@ -10,6 +10,8 @@ import { createContactColumns, type Contact } from "@/components/user/contacts/c
 import { ContactsDataTable } from "@/components/user/contacts/data-table";
 import { CreateContactModal } from "@/components/user/contacts/create-contact-modal";
 import { UpdateContactModal } from "@/components/user/contacts/update-contact-modal";
+import { ViewContactModal } from './../../components/user/contacts/view-contact-modal';
+import { toast } from "sonner";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: "Formulaires", href: "#" },
@@ -41,6 +43,7 @@ interface Props {
 export default function ContactsIndex({ contacts, filters }: Props) {
   const data = contacts.data ?? [];
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+  const [isViewOpen, setIsViewOpen] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selected, setSelected] = useState<Contact | null>(null);
@@ -69,6 +72,10 @@ export default function ContactsIndex({ contacts, filters }: Props) {
   const columns = useMemo(
     () =>
       createContactColumns({
+        onView: (contact) => {
+          setSelected(contact);
+          setIsViewOpen(true);
+        },
         onEdit: (a) => {
           setSelected(a);
           setIsEditOpen(true);
@@ -77,6 +84,7 @@ export default function ContactsIndex({ contacts, filters }: Props) {
           router.delete(route("contacts.destroy", contact.id), {
             preserveScroll: true,
             onSuccess: () => {
+              toast.success("Contact supprimé avec succès");
               router.reload({ only: ["contacts"] });
             },
           });
@@ -112,6 +120,15 @@ export default function ContactsIndex({ contacts, filters }: Props) {
           onPerPageChange={onPerPageChange}
           onPageChange={onPageChange}
           onAddClick={() => setIsCreateOpen(true)}
+        />
+
+        <ViewContactModal
+          open={isViewOpen}
+          onOpenChange={(v) => {
+            setIsViewOpen(v);
+            if (!v) setSelected(null);
+          }}
+          contact={selected}
         />
 
         <CreateContactModal

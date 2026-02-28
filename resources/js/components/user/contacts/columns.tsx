@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
-import { MoreHorizontal, SquarePen, Trash2 } from "lucide-react";
+import { Eye, MoreHorizontal, SquarePen, Trash2 } from "lucide-react";
 
 export interface Contact {
   id: number;
@@ -28,13 +28,14 @@ export interface Contact {
 }
 
 export function createContactColumns(opts: {
+  onView?: (contact: Contact) => void;
   onEdit?: (contact: Contact) => void;
   onDelete: (contact: Contact) => void,
   currentSortBy?: string;
   currentSortDir?: "asc" | "desc";
   onSortChange?: (sortBy: string, sortDir: "asc" | "desc") => void;
 }): ColumnDef<Contact>[] {
-  const { onEdit, onDelete, currentSortBy, currentSortDir, onSortChange } = opts;
+  const {onView, onEdit, onDelete, currentSortBy, currentSortDir, onSortChange } = opts;
 
   return [
     {
@@ -112,7 +113,7 @@ export function createContactColumns(opts: {
           onSortChange={onSortChange}
         />
       ),
-      cell: ({ row }) => row.getValue("email") || <span className="text-muted-foreground italic">-</span>,
+      cell: ({ row }) => row.getValue("email") || <span className="text-muted-foreground">-</span>,
     },
     {
       accessorKey: "subject",
@@ -128,7 +129,7 @@ export function createContactColumns(opts: {
       ),
       cell: ({ row }) => {
         const raw = row.getValue("subject") as string;
-        if (!raw) return <span className="text-muted-foreground italic">-</span>;
+        if (!raw) return <span className="text-muted-foreground">-</span>;
         return raw.length > 30 ? raw.substring(0, 30) + "..." : raw;
       },
     },
@@ -146,35 +147,10 @@ export function createContactColumns(opts: {
       ),
       cell: ({ row }) => {
         const raw = row.getValue("message") as string;
-        if (!raw) return <span className="text-muted-foreground italic">-</span>;
+        if (!raw) return <span className="text-muted-foreground">-</span>;
         return raw.length > 30 ? raw.substring(0, 30) + "..." : raw;
       },
     },
-    /* {
-      accessorKey: "deleted_at",
-      header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title="Statut"
-        columnId="deleted_at"
-        currentSortBy={currentSortBy}
-        currentSortDir={currentSortDir}
-        onSortChange={onSortChange}
-      />
-      ),
-      cell: ({ row }) => {
-      const deletedAt = row.getValue("deleted_at") as string | null;
-      return deletedAt ? (
-        <Badge variant="destructive">
-        Supprimé
-        </Badge>
-      ) : (
-        <Badge variant="default">
-        Actif
-        </Badge>
-      );
-      },
-    }, */
     {
       id: "actions",
       enableHiding: false,
@@ -192,6 +168,13 @@ export function createContactColumns(opts: {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
+
+              {onView && (
+                <DropdownMenuItem onClick={() => onView(contact)}>
+                  <Eye className="mr-2 h-4 w-4" />
+                  Voir
+                </DropdownMenuItem>
+              )}
 
               {onEdit && (
                 <DropdownMenuItem onClick={() => onEdit(contact)}>

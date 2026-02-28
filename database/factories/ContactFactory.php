@@ -4,20 +4,18 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Contact>
- */
 class ContactFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->name(),
+            'email' => fake()->safeEmail(),
+            'phone' => fake()->phoneNumber(),
+            'subject' => fake()->sentence(3),
+            'message' => fake()->paragraph(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

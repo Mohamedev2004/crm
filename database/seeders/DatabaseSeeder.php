@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             ReportSeeder::class,
             TaskSeeder::class,
             AppointmentSeeder::class,
+            ContactSeeder::class,
         ]);
     }
 }

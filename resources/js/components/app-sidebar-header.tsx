@@ -95,7 +95,7 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                                             setOpen(false);
                                             router.visit(item.href);
                                         }}
-                                        className="flex items-center gap-2"
+                                        className="flex items-center gap-2 my-1"
                                     >
                                         {Icon && <Icon className="h-4 w-4" />}
                                         {item.title}

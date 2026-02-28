@@ -149,9 +149,6 @@ export default function KanbanBoard({ initialTasks, patients }: KanbanBoardProps
         const newTasks = data.tasks.data.map((task: any) => ({
           ...task,
           tags: task.tags || ["Task"],
-          comments: task.comments || 0,
-          attachments: task.attachments || 0,
-          assignees: task.assignees || ["/avatars/01.png"],
           patient: task.patient || null,
         }));
 
